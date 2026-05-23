@@ -1,0 +1,3037 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>聚合支付技术服务管理平台</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.4.0/dist/tabler-icons.min.css">
+<style>
+:root{
+  --bg:#F8FAFC;--surface:#FFFFFF;--surface2:#F1F5F9;--surface3:#E2E8F0;
+  --border:#E5E7EB;--border2:#D1D5DB;
+  --text:#0F172A;--text2:#475569;--text3:#94A3B8;
+  --accent:#2563EB;--accent2:#1D4ED8;--accent-bg:#EFF6FF;--accent-text:#1E40AF;
+  --green:#16A34A;--green-bg:#F0FDF4;--green-text:#15803D;--green-border:#BBF7D0;
+  --red:#DC2626;--red-bg:#FEF2F2;--red-text:#B91C1C;--red-border:#FECACA;
+  --amber:#D97706;--amber-bg:#FFFBEB;--amber-text:#B45309;--amber-border:#FDE68A;
+  --blue:#2563EB;--blue-bg:#EFF6FF;--blue-text:#1E40AF;--blue-border:#BFDBFE;
+  --purple-bg:#FAF5FF;--purple-text:#7E22CE;
+  --gray-bg:#F1F5F9;--gray-text:#475569;
+  --radius:6px;--radius-lg:8px;--radius-xl:12px;
+  --font:'Inter','PingFang SC',system-ui,sans-serif;--mono:'JetBrains Mono',monospace;
+  --sidebar-w:236px;--topbar-h:54px;
+  --shadow-sm:0 1px 2px rgba(15,23,42,.04);
+  --shadow:0 1px 3px rgba(15,23,42,.06),0 1px 2px rgba(15,23,42,.04);
+  --shadow-lg:0 10px 25px rgba(15,23,42,.08),0 4px 10px rgba(15,23,42,.04);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{font-family:var(--font);font-size:13px;color:var(--text);background:var(--bg);display:flex;-webkit-font-smoothing:antialiased}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#CBD5E1;border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:#94A3B8}
+
+/* SIDEBAR */
+.sidebar{width:var(--sidebar-w);height:100vh;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto}
+.logo{padding:18px 18px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;flex-shrink:0}
+.logo-mark{width:36px;height:36px;background:linear-gradient(135deg,#2563EB,#1D4ED8);border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 2px 6px rgba(37,99,235,.25)}
+.logo-mark i{color:#fff;font-size:18px}
+.logo-text{font-size:14px;font-weight:600;color:var(--text);line-height:1.3}
+.logo-sub{font-size:10.5px;color:var(--text3);margin-top:1px;font-weight:500}
+.nav{flex:1;padding:8px 0}
+.nav-group{margin-bottom:2px}
+.nav-group-header{display:flex;align-items:center;justify-content:space-between;padding:10px 18px 6px;cursor:pointer;user-select:none}
+.nav-group-label{font-size:10.5px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.05em}
+.nav-group-header i{font-size:13px;color:var(--text3);transition:transform .2s}
+.nav-group-header.collapsed i{transform:rotate(-90deg)}
+.nav-children{overflow:hidden;transition:max-height .25s}
+.nav-item{display:flex;align-items:center;gap:9px;padding:7px 16px 7px 30px;font-size:12.5px;color:var(--text2);cursor:pointer;transition:all .12s;user-select:none;border-right:2px solid transparent}
+.nav-item:hover{background:var(--surface2);color:var(--text)}
+.nav-item.active{background:var(--accent-bg);color:var(--accent);border-right-color:var(--accent);font-weight:500}
+.nav-item i{font-size:14px;flex-shrink:0;color:inherit}
+.nav-badge{margin-left:auto;background:var(--red-bg);color:var(--red);font-size:10px;padding:1px 6px;border-radius:10px;font-weight:600;border:1px solid var(--red-border)}
+.nav-badge.amber{background:var(--amber-bg);color:var(--amber);border-color:var(--amber-border)}
+.sidebar-footer{padding:12px 16px;border-top:1px solid var(--border);flex-shrink:0;display:flex;align-items:center;gap:10px}
+.user-av{width:32px;height:32px;border-radius:50%;background:var(--accent-bg);color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;flex-shrink:0;border:1px solid var(--blue-border)}
+.user-name{font-size:12.5px;font-weight:500}
+.user-role{font-size:11px;color:var(--text3)}
+
+/* MAIN */
+.main{flex:1;display:flex;flex-direction:column;min-width:0;height:100vh;overflow:hidden}
+.topbar{height:var(--topbar-h);background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;flex-shrink:0;box-shadow:var(--shadow-sm)}
+.breadcrumb{display:flex;align-items:center;gap:7px;font-size:13px;color:var(--text2)}
+.breadcrumb .sep{color:var(--text3);font-size:11px}
+.breadcrumb .cur{color:var(--text);font-weight:500}
+.topbar-right{display:flex;align-items:center;gap:8px}
+.search-box{display:flex;align-items:center;gap:7px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:6px 11px;width:240px;transition:all .15s}
+.search-box:focus-within{border-color:var(--accent);background:var(--surface);box-shadow:0 0 0 3px rgba(37,99,235,.08)}
+.search-box input{border:none;background:transparent;font-size:12.5px;font-family:var(--font);color:var(--text);outline:none;width:100%}
+.search-box input::placeholder{color:var(--text3)}
+.search-box i{font-size:14px;color:var(--text3)}
+.tb-btn{width:34px;height:34px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);color:var(--text2);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;transition:all .12s;position:relative}
+.tb-btn:hover{background:var(--surface2);color:var(--text);border-color:var(--border2)}
+.tb-btn .dot{position:absolute;top:7px;right:8px;width:7px;height:7px;background:var(--red);border-radius:50%;border:2px solid var(--surface)}
+
+/* CONTENT */
+.content{flex:1;overflow-y:auto;padding:22px 24px}
+.view{display:none;animation:fadeIn .2s ease}
+.view.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+/* COMPLIANCE BANNER */
+.compliance-banner{background:linear-gradient(135deg,#EFF6FF,#F0F9FF);border:1px solid var(--blue-border);border-radius:var(--radius-lg);padding:11px 16px;font-size:12.5px;color:var(--blue-text);display:flex;align-items:flex-start;gap:10px;margin-bottom:18px;line-height:1.6}
+.compliance-banner i{font-size:17px;flex-shrink:0;margin-top:1px;color:var(--accent)}
+.compliance-banner strong{color:var(--accent2);font-weight:600}
+
+/* PAGE HEADER */
+.page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.page-title{font-size:18px;font-weight:600;color:var(--text);letter-spacing:-.01em}
+.page-actions{display:flex;align-items:center;gap:8px}
+
+/* METRICS */
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}
+.metric-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px 18px;cursor:pointer;transition:all .15s;box-shadow:var(--shadow-sm)}
+.metric-card:hover{border-color:var(--border2);transform:translateY(-1px);box-shadow:var(--shadow)}
+.metric-label{font-size:12px;color:var(--text2);margin-bottom:8px;display:flex;align-items:center;gap:6px;font-weight:500}
+.metric-label i{font-size:14px;color:var(--text3)}
+.metric-val{font-size:24px;font-weight:600;line-height:1.2;letter-spacing:-.02em}
+.metric-trend{font-size:11.5px;margin-top:5px;display:flex;align-items:center;gap:3px;font-weight:500}
+.up{color:var(--green)}
+.down{color:var(--red)}
+.warn{color:var(--amber)}
+
+/* CARDS */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px 20px;box-shadow:var(--shadow-sm)}
+.card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.card-title{font-size:14px;font-weight:600;color:var(--text)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:18px}
+
+/* TABLE */
+.table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;margin-bottom:14px;box-shadow:var(--shadow-sm)}
+.table-toolbar{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--surface)}
+table{width:100%;border-collapse:collapse;table-layout:fixed}
+thead th{background:#F9FAFB;padding:11px 14px;font-size:11.5px;font-weight:600;color:var(--text2);text-align:left;border-bottom:1px solid var(--border);white-space:nowrap;text-transform:uppercase;letter-spacing:.03em}
+tbody tr{border-bottom:1px solid #F1F5F9;cursor:pointer;transition:background .1s}
+tbody tr:last-child{border-bottom:none}
+tbody tr:hover{background:#F8FAFC}
+td{padding:11px 14px;font-size:12.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text)}
+.mono{font-family:var(--mono);font-size:11.5px;color:var(--text2)}
+
+/* BADGES */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:500;white-space:nowrap;border:1px solid transparent}
+.b-green{background:var(--green-bg);color:var(--green-text);border-color:var(--green-border)}
+.b-red{background:var(--red-bg);color:var(--red-text);border-color:var(--red-border)}
+.b-amber{background:var(--amber-bg);color:var(--amber-text);border-color:var(--amber-border)}
+.b-blue{background:var(--blue-bg);color:var(--blue-text);border-color:var(--blue-border)}
+.b-gray{background:var(--gray-bg);color:var(--gray-text);border-color:var(--border)}
+.b-purple{background:var(--purple-bg);color:var(--purple-text);border-color:#E9D5FF}
+.b-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:var(--radius);font-size:12.5px;font-family:var(--font);cursor:pointer;transition:all .12s;border:1px solid transparent;font-weight:500;white-space:nowrap}
+.btn:hover{transform:translateY(-1px)}
+.btn-primary{background:var(--accent);color:#fff;box-shadow:0 1px 2px rgba(37,99,235,.2)}
+.btn-primary:hover{background:var(--accent2);box-shadow:0 2px 6px rgba(37,99,235,.3)}
+.btn-ghost{background:var(--surface);border-color:var(--border);color:var(--text2)}
+.btn-ghost:hover{background:var(--surface2);color:var(--text);border-color:var(--border2)}
+.btn-danger{background:var(--red-bg);color:var(--red-text);border-color:var(--red-border)}
+.btn-danger:hover{background:#FEE2E2}
+.btn-success{background:var(--green-bg);color:var(--green-text);border-color:var(--green-border)}
+.btn-success:hover{background:#DCFCE7}
+.btn-sm{padding:4px 10px;font-size:11.5px}
+.btn i{font-size:13px}
+
+/* FORM */
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.form-group{display:flex;flex-direction:column;gap:6px}
+.form-group label{font-size:12px;color:var(--text2);font-weight:500}
+.form-group label .req{color:var(--red);margin-left:2px}
+.form-group input,.form-group select,.form-group textarea,select,input[type=text]{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:7px 11px;color:var(--text);font-family:var(--font);font-size:12.5px;outline:none;transition:all .15s;width:100%}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus,select:focus,input[type=text]:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(37,99,235,.08)}
+.form-group textarea{resize:vertical;min-height:72px}
+
+/* PAGINATION */
+.pagination{display:flex;align-items:center;justify-content:space-between;font-size:12px;color:var(--text2);padding:0 4px}
+.page-btns{display:flex;gap:4px}
+.pg-btn{min-width:30px;height:28px;padding:0 8px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);color:var(--text2);font-size:11.5px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:var(--font);transition:all .12s;font-weight:500}
+.pg-btn:hover{background:var(--surface2)}
+.pg-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(15,23,42,.4);backdrop-filter:blur(4px);z-index:200;align-items:flex-start;justify-content:center;overflow-y:auto;padding:60px 20px;animation:fadeIn .15s ease}
+.modal-overlay.open{display:flex}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-xl);width:680px;max-width:100%;animation:slideIn .25s cubic-bezier(.4,0,.2,1);box-shadow:var(--shadow-lg)}
+.modal.wide{width:860px}
+@keyframes slideIn{from{transform:translateY(-16px);opacity:0}to{transform:none;opacity:1}}
+.modal-header{padding:18px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.modal-title{font-size:15px;font-weight:600}
+.modal-close{background:transparent;border:none;color:var(--text3);cursor:pointer;font-size:18px;display:flex;padding:4px;border-radius:var(--radius);transition:all .1s}
+.modal-close:hover{background:var(--surface2);color:var(--text)}
+.modal-body{padding:22px}
+.modal-footer{padding:14px 22px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px;background:#FAFBFC;border-radius:0 0 var(--radius-xl) var(--radius-xl)}
+.detail-row{display:flex;padding:9px 0;border-bottom:1px solid #F1F5F9;font-size:12.5px}
+.detail-row:last-child{border-bottom:none}
+.detail-label{width:140px;color:var(--text2);flex-shrink:0;font-weight:500}
+.detail-val{flex:1;color:var(--text)}
+
+/* TABS */
+.tabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:16px}
+.tab{padding:10px 16px;font-size:13px;cursor:pointer;color:var(--text2);border-bottom:2px solid transparent;margin-bottom:-1px;font-weight:500;transition:color .12s}
+.tab:hover{color:var(--text)}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+
+/* TOAST */
+.toast-container{position:fixed;top:18px;right:18px;z-index:999;display:flex;flex-direction:column;gap:8px}
+.toast{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:11px 16px;font-size:12.5px;display:flex;align-items:center;gap:9px;box-shadow:var(--shadow-lg);animation:toastIn .25s ease;min-width:240px;max-width:340px;font-weight:500}
+.toast.success{border-left:3px solid var(--green);color:var(--text)}
+.toast.success i{color:var(--green)}
+.toast.error{border-left:3px solid var(--red);color:var(--text)}
+.toast.error i{color:var(--red)}
+.toast.info{border-left:3px solid var(--accent);color:var(--text)}
+.toast.info i{color:var(--accent)}
+@keyframes toastIn{from{transform:translateX(20px);opacity:0}to{transform:none;opacity:1}}
+
+/* FLOW DIAGRAM */
+.flow-wrap{overflow-x:auto;padding:18px 0}
+.flow{display:flex;align-items:center;gap:0;flex-wrap:nowrap;min-width:900px}
+.flow-node{background:var(--surface);border:1.5px solid var(--border2);border-radius:var(--radius-lg);padding:11px 15px;text-align:center;font-size:12px;min-width:114px;flex-shrink:0}
+.flow-node .fn-status{font-weight:600;margin-bottom:3px;font-size:12.5px;font-family:var(--mono)}
+.flow-node .fn-desc{font-size:10.5px;color:var(--text2)}
+.flow-node.success{border-color:var(--green);background:var(--green-bg)}
+.flow-node.success .fn-status{color:var(--green-text)}
+.flow-node.paying{border-color:var(--accent);background:var(--accent-bg)}
+.flow-node.paying .fn-status{color:var(--accent-text)}
+.flow-node.failed{border-color:var(--red);background:var(--red-bg)}
+.flow-node.failed .fn-status{color:var(--red-text)}
+.flow-node.warn-node{border-color:var(--amber);background:var(--amber-bg)}
+.flow-node.warn-node .fn-status{color:var(--amber-text)}
+.flow-arrow{color:var(--text3);font-size:20px;margin:0 6px;flex-shrink:0}
+.flow-branch{display:flex;flex-direction:column;gap:8px;margin-left:8px}
+
+/* SCOPE */
+.scope-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.scope-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px 20px;box-shadow:var(--shadow-sm)}
+.scope-card.allow{border-top:3px solid var(--green)}
+.scope-card.deny{border-top:3px solid var(--red)}
+.scope-head{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.scope-head-icon{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px}
+.scope-head-icon.allow{background:var(--green-bg);color:var(--green-text)}
+.scope-head-icon.deny{background:var(--red-bg);color:var(--red-text)}
+.scope-item{display:flex;align-items:flex-start;gap:8px;padding:7px 0;border-bottom:1px solid #F1F5F9;font-size:12.5px}
+.scope-item:last-child{border-bottom:none}
+.scope-item i{font-size:14px;margin-top:1px;flex-shrink:0}
+.scope-item.allow i{color:var(--green)}
+.scope-item.deny i{color:var(--red)}
+
+/* CHECK LIST */
+.check-section{margin-bottom:18px}
+.check-title{font-size:13px;font-weight:600;margin-bottom:10px;color:var(--text);padding-left:8px;border-left:3px solid var(--accent)}
+.check-item{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--surface2);border-radius:var(--radius);margin-bottom:6px;font-size:12.5px;border:1px solid var(--border)}
+.check-item .ci-icon{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.ci-done{background:var(--green);color:#fff}
+.ci-pending{background:var(--amber);color:#fff}
+.ci-warn{background:var(--red);color:#fff}
+
+/* ENTITY CARD - merchant detail tabs */
+.tab-content{display:none}
+.tab-content.active{display:block}
+
+/* STATS GRID */
+.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.stat-mini{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:10px 12px}
+.stat-mini-label{font-size:11px;color:var(--text2);margin-bottom:3px}
+.stat-mini-val{font-size:16px;font-weight:600}
+
+/* EMPTY */
+.empty-state{padding:60px 0;text-align:center;color:var(--text3)}
+.empty-state i{font-size:42px;display:block;margin:0 auto 12px;opacity:.5}
+.empty-state .es-title{font-size:14px;color:var(--text2);font-weight:500;margin-bottom:4px}
+.empty-state .es-desc{font-size:12px;color:var(--text3)}
+</style>
+</head>
+<body>
+
+<div class="toast-container" id="toast-container"></div>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="logo">
+    <div class="logo-mark"><i class="ti ti-building-bank"></i></div>
+    <div>
+      <div class="logo-text">聚合支付技术服务</div>
+      <div class="logo-sub">管理平台 V1.0</div>
+    </div>
+  </div>
+  <nav class="nav" id="sidebar-nav"></nav>
+  <div class="sidebar-footer">
+    <div class="user-av">管</div>
+    <div style="flex:1;min-width:0">
+      <div class="user-name">超级管理员</div>
+      <div class="user-role">合规运营</div>
+    </div>
+    <i class="ti ti-logout" style="font-size:15px;color:var(--text3);cursor:pointer" onclick="toast('已安全退出登录','info')"></i>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+  <header class="topbar">
+    <div class="breadcrumb">
+      <span style="color:var(--text3)">平台</span><span class="sep">/</span>
+      <span class="cur" id="topbar-title">首页工作台</span>
+    </div>
+    <div class="topbar-right">
+      <div class="search-box"><i class="ti ti-search"></i><input type="text" placeholder="搜索订单号、商户号、收款码…" id="global-search"></div>
+      <button class="tb-btn" onclick="toast('暂无新通知','info')" title="通知"><i class="ti ti-bell"></i><span class="dot"></span></button>
+      <button class="tb-btn" onclick="toast('数据已刷新','success')" title="刷新"><i class="ti ti-refresh"></i></button>
+      <button class="tb-btn" title="帮助" onclick="toast('帮助文档建设中','info')"><i class="ti ti-help-circle"></i></button>
+    </div>
+  </header>
+
+  <div class="content">
+
+    <!-- 1. 首页工作台 -->
+    <div class="view active" id="view-home">
+      <div class="compliance-banner">
+        <i class="ti ti-shield-check"></i>
+        <span><strong>合规声明：</strong>本平台仅作为聚合支付技术服务系统，提供交易信息转接、商户管理、接口管理、风控预警、对账辅助等技术服务，<strong>不参与资金清算，不沉淀商户交易资金，不以自身名义提供支付服务。</strong>资金流由合作持牌收单机构 / 银行 / 支付机构独立完成。</span>
+      </div>
+
+      <div class="metrics">
+        <div class="metric-card" onclick="switchView('license')">
+          <div class="metric-label"><i class="ti ti-certificate"></i>收单外包备案</div>
+          <div class="metric-val" style="color:var(--green);font-size:18px">已备案</div>
+          <div class="metric-trend up"><i class="ti ti-check"></i>中国支付清算协会</div>
+        </div>
+        <div class="metric-card" onclick="switchView('partner-list')">
+          <div class="metric-label"><i class="ti ti-building"></i>合作收单机构</div>
+          <div class="metric-val">3</div>
+          <div class="metric-trend" style="color:var(--text2)">持牌机构 / 银行</div>
+        </div>
+        <div class="metric-card" onclick="switchView('partner-agreement')">
+          <div class="metric-label"><i class="ti ti-file-check"></i>有效合作协议</div>
+          <div class="metric-val">3</div>
+          <div class="metric-trend up"><i class="ti ti-check"></i>均在有效期内</div>
+        </div>
+        <div class="metric-card" onclick="switchView('compliance-check')">
+          <div class="metric-label"><i class="ti ti-alert-triangle"></i>待处理合规项</div>
+          <div class="metric-val warn" id="dash-compliance-todo">2</div>
+          <div class="metric-trend warn"><i class="ti ti-clock"></i>需30天内处理</div>
+        </div>
+      </div>
+
+      <div class="metrics">
+        <div class="metric-card" onclick="switchView('order-list')">
+          <div class="metric-label"><i class="ti ti-trending-up"></i>今日转接金额</div>
+          <div class="metric-val" style="color:var(--accent)">¥128,640</div>
+          <div class="metric-trend up"><i class="ti ti-arrow-up-right"></i>+12.4% vs 昨日</div>
+        </div>
+        <div class="metric-card" onclick="switchView('order-list')">
+          <div class="metric-label"><i class="ti ti-receipt"></i>今日订单数</div>
+          <div class="metric-val">1,847</div>
+          <div class="metric-trend up"><i class="ti ti-arrow-up-right"></i>+8.1% vs 昨日</div>
+        </div>
+        <div class="metric-card" onclick="switchView('order-list')">
+          <div class="metric-label"><i class="ti ti-check"></i>转接成功率</div>
+          <div class="metric-val" style="color:var(--green)">97.3%</div>
+          <div class="metric-trend down"><i class="ti ti-arrow-down-right"></i>-0.4% vs 昨日</div>
+        </div>
+        <div class="metric-card" onclick="switchView('merchant-list')">
+          <div class="metric-label"><i class="ti ti-users"></i>活跃商户</div>
+          <div class="metric-val" id="dash-active-merchants">238</div>
+          <div class="metric-trend up"><i class="ti ti-arrow-up-right"></i>+3 本周新增</div>
+        </div>
+      </div>
+
+      <div class="grid2">
+        <!-- 风控待办 -->
+        <div class="card">
+          <div class="card-head">
+            <span class="card-title">风控待办</span>
+            <button class="btn btn-ghost btn-sm" onclick="switchView('risk-orders')">查看全部</button>
+          </div>
+          <div id="dash-todo-list" style="display:flex;flex-direction:column;gap:8px"></div>
+        </div>
+
+        <!-- 通道状态 -->
+        <div class="card">
+          <div class="card-head">
+            <span class="card-title">合作通道状态</span>
+            <span style="font-size:11px;color:var(--text3)">由持牌收单机构提供</span>
+          </div>
+          <div id="dash-channels" style="display:flex;flex-direction:column;gap:9px"></div>
+          <div style="margin-top:14px;padding:11px 13px;background:var(--blue-bg);border:1px solid var(--blue-border);border-radius:var(--radius)">
+            <div style="font-size:11.5px;color:var(--blue-text);line-height:1.6">
+              <i class="ti ti-info-circle" style="font-size:13px;vertical-align:-2px"></i>
+              以上通道由合作持牌收单机构 / 银行独立运营，本平台仅负责技术信息转接，<strong>不参与资金清算</strong>。
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 最近活动 -->
+      <div class="card">
+        <div class="card-head"><span class="card-title">最近活动</span></div>
+        <div id="dash-activity"></div>
+      </div>
+    </div>
+
+    <!-- 2. 商户列表 -->
+    <div class="view" id="view-merchant-list">
+      <div class="page-header">
+        <span class="page-title">商户列表</span>
+        <div class="page-actions">
+          <button class="btn btn-ghost btn-sm" onclick="toast('已生成商户列表 Excel','success')"><i class="ti ti-download"></i>导出</button>
+          <button class="btn btn-primary btn-sm" onclick="switchView('merchant-onboard')"><i class="ti ti-plus"></i>商户入网申请</button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <div class="table-toolbar">
+          <input type="text" placeholder="搜索商户名称 / 商户号…" style="width:220px" id="merchant-search" oninput="renderMerchants()">
+          <select id="merchant-filter-status" onchange="renderMerchants()"><option value="">全部状态</option><option>正常</option><option>审核中</option><option>已暂停</option></select>
+          <select id="merchant-filter-risk" onchange="renderMerchants()"><option value="">全部风险</option><option>低</option><option>中</option><option>高</option></select>
+        </div>
+        <table>
+          <thead><tr>
+            <th style="width:120px">商户编号</th>
+            <th style="width:160px">商户名称</th>
+            <th style="width:80px">行业</th>
+            <th style="width:70px">MCC</th>
+            <th style="width:110px">合作收单机构</th>
+            <th style="width:70px">状态</th>
+            <th style="width:70px">风险等级</th>
+            <th style="width:90px">今日转接额</th>
+            <th style="width:90px">入网时间</th>
+            <th style="width:130px">操作</th>
+          </tr></thead>
+          <tbody id="merchant-tbody"></tbody>
+        </table>
+      </div>
+      <div class="pagination"><span id="merchant-count"></span><div class="page-btns"><button class="pg-btn active">1</button><button class="pg-btn">2</button><button class="pg-btn">3</button></div></div>
+    </div>
+
+    <!-- 3. 商户入网 -->
+    <div class="view" id="view-merchant-onboard">
+      <div class="page-header"><span class="page-title">商户入网申请</span></div>
+      <div class="compliance-banner"><i class="ti ti-info-circle"></i>商户入网需完成资质审核后方可开通交易信息转接服务。本平台完成初步核验后，将资料转交合作收单机构完成最终审核。</div>
+      <div class="card">
+        <div class="card-head"><span class="card-title">基础信息</span></div>
+        <div class="form-row">
+          <div class="form-group"><label>商户名称<span class="req">*</span></label><input type="text" placeholder="请填写营业执照名称" id="ob-name"></div>
+          <div class="form-group"><label>统一社会信用代码<span class="req">*</span></label><input type="text" placeholder="18位社会信用代码" id="ob-credit"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>行业类型<span class="req">*</span></label><select id="ob-industry"><option>普通零售</option><option>餐饮服务</option><option>教育培训</option><option>医疗器械</option></select></div>
+          <div class="form-group"><label>MCC 行业码<span class="req">*</span></label><input type="text" placeholder="如：5411（超市/百货）" id="ob-mcc"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>合作收单机构<span class="req">*</span></label><select id="ob-partner"><option>某银行股份有限公司</option><option>某支付科技有限公司</option><option>某银联商务股份有限公司</option></select></div>
+          <div class="form-group"><label>法人姓名<span class="req">*</span></label><input type="text" placeholder="与身份证一致"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>法人身份证号<span class="req">*</span></label><input type="text" placeholder="18位身份证号"></div>
+          <div class="form-group"><label>结算账号说明</label><input type="text" value="由合作收单机构直接绑定" disabled style="background:var(--surface2);color:var(--text3)"></div>
+        </div>
+        <div style="background:var(--amber-bg);border:1px solid var(--amber-border);border-radius:var(--radius);padding:10px 14px;margin-bottom:14px;font-size:12px;color:var(--amber-text)">
+          <i class="ti ti-alert-triangle" style="vertical-align:-2px;margin-right:5px"></i>
+          本平台不参与商户资金结算，结算账号由合作收单机构直接绑定并清算。本平台不接触、不沉淀任何商户交易资金。
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>单笔交易限额（元）</label><input type="text" placeholder="如：5000"></div>
+          <div class="form-group"><label>单日交易限额（元）</label><input type="text" placeholder="如：50000"></div>
+        </div>
+        <div class="form-group" style="margin-bottom:16px"><label>备注</label><textarea placeholder="补充说明…"></textarea></div>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-primary" onclick="submitOnboard()"><i class="ti ti-send"></i>提交审核</button>
+          <button class="btn btn-ghost" onclick="toast('已保存草稿','success')">保存草稿</button>
+          <button class="btn btn-ghost" onclick="switchView('merchant-list')">返回列表</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. 商户资料审核 -->
+    <div class="view" id="view-merchant-audit">
+      <div class="page-header">
+        <span class="page-title">商户资料审核</span>
+        <div class="page-actions"><span class="badge b-amber" id="audit-pending-badge">2 待审核</span></div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th style="width:130px">申请编号</th><th style="width:170px">商户名称</th><th style="width:100px">行业</th>
+            <th style="width:140px">申请时间</th><th style="width:90px">审核状态</th><th style="width:140px">目标收单机构</th><th style="width:120px">操作</th>
+          </tr></thead>
+          <tbody id="audit-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 5. 商户风险评级 -->
+    <div class="view" id="view-merchant-risk">
+      <div class="page-header"><span class="page-title">商户风险评级</span><div class="page-actions"><button class="btn btn-ghost btn-sm" onclick="toast('风险评级报告已导出','success')"><i class="ti ti-download"></i>导出报告</button></div></div>
+      <div class="metrics" style="margin-bottom:18px">
+        <div class="metric-card"><div class="metric-label"><i class="ti ti-shield-check"></i>低风险商户</div><div class="metric-val" style="color:var(--green)" id="risk-low-count">0</div></div>
+        <div class="metric-card"><div class="metric-label"><i class="ti ti-alert-triangle"></i>中风险商户</div><div class="metric-val" style="color:var(--amber)" id="risk-mid-count">0</div></div>
+        <div class="metric-card"><div class="metric-label"><i class="ti ti-alert-octagon"></i>高风险商户</div><div class="metric-val" style="color:var(--red)" id="risk-high-count">0</div></div>
+        <div class="metric-card"><div class="metric-label"><i class="ti ti-pause"></i>已暂停转接</div><div class="metric-val" id="risk-paused-count">0</div></div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th style="width:120px">商户编号</th><th style="width:160px">商户名称</th><th style="width:80px">行业</th>
+            <th style="width:60px">MCC</th><th style="width:110px">合作收单机构</th><th style="width:80px">风险等级</th>
+            <th style="width:70px">退款率</th><th style="width:90px">单笔限额</th><th style="width:90px">单日限额</th><th style="width:130px">操作</th>
+          </tr></thead>
+          <tbody id="merchant-risk-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 6. 收款码列表 -->
+    <div class="view" id="view-qr-list">
+      <div class="page-header"><span class="page-title">收款码列表</span><div class="page-actions"><button class="btn btn-primary btn-sm" onclick="openModal('modal-qr-new')"><i class="ti ti-plus"></i>新增收款码</button></div></div>
+      <div class="table-wrap">
+        <div class="table-toolbar">
+          <input type="text" placeholder="搜索收款码编号 / 商户…" style="width:220px">
+          <select><option>全部状态</option><option>正常</option><option>已暂停</option><option>已冻结</option></select>
+        </div>
+        <table>
+          <thead><tr>
+            <th style="width:130px">收款码编号</th><th style="width:140px">所属商户</th><th style="width:110px">所属门店</th>
+            <th style="width:110px">合作收单机构</th><th style="width:70px">码类型</th><th style="width:80px">状态</th>
+            <th style="width:100px">创建时间</th><th style="width:130px">最近交易</th><th style="width:140px">操作</th>
+          </tr></thead>
+          <tbody id="qr-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 7. 码牌巡检 -->
+    <div class="view" id="view-qr-patrol">
+      <div class="page-header"><span class="page-title">码牌巡检记录</span><div class="page-actions"><button class="btn btn-primary btn-sm" onclick="openModal('modal-patrol-new')"><i class="ti ti-plus"></i>新增巡检</button></div></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th style="width:110px">巡检编号</th><th style="width:130px">收款码编号</th><th style="width:120px">所属商户</th>
+            <th style="width:110px">所属门店</th><th style="width:90px">巡检人员</th><th style="width:130px">巡检时间</th>
+            <th style="width:80px">是否异常</th><th style="width:120px">异常类型</th><th style="width:90px">处理结果</th><th style="width:90px">操作</th>
+          </tr></thead>
+          <tbody id="patrol-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 8. 防调包记录 -->
+    <div class="view" id="view-qr-antitamper">
+      <div class="page-header"><span class="page-title">防调包记录</span><div class="page-actions"><span class="badge b-red" id="antitamper-badge">2 疑似调包</span></div></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th style="width:130px">收款码编号</th><th style="width:120px">商户名称</th><th style="width:100px">门店名称</th>
+            <th style="width:80px">绑定状态</th><th style="width:130px">最后核验时间</th><th style="width:110px">最近交易地</th>
+            <th style="width:120px">注册门店地址</th><th style="width:80px">是否异地</th><th style="width:80px">疑似调包</th><th style="width:130px">操作</th>
+          </tr></thead>
+          <tbody id="antitamper-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 9. 订单列表 -->
+    <div class="view" id="view-order-list">
+      <div class="page-header"><span class="page-title">订单列表</span><div class="page-actions"><button class="btn btn-ghost btn-sm" onclick="toast('订单数据已导出','success')"><i class="ti ti-download"></i>导出</button></div></div>
+      <div class="table-wrap">
+        <div class="table-toolbar">
+          <input type="text" placeholder="系统订单号 / 商户订单号 / 三方交易号…" style="width:280px" id="order-search" oninput="renderOrders()">
+          <select id="order-filter-status" onchange="renderOrders()"><option value="">全部状态</option><option value="SUCCESS">支付成功</option><option value="PAYING">支付中</option><option value="FAILED">支付失败</option><option value="CLOSED">已关闭</option><option value="RISK_HOLD">风控挂起</option></select>
+          <select id="order-filter-channel" onchange="renderOrders()"><option value="">所有通道</option><option>WECHAT</option><option>ALIPAY</option><option>UNIONPAY</option></select>
+          <select><option>今天</option><option>最近7天</option><option>最近30天</option></select>
+        </div>
+        <table>
+          <thead><tr>
+            <th style="width:170px">系统订单号</th><th style="width:120px">商户</th><th style="width:110px">商户订单号</th>
+            <th style="width:90px">转接金额</th><th style="width:100px">支付方式</th><th style="width:80px">通道</th>
+            <th style="width:90px">状态</th><th style="width:140px">时间</th><th style="width:90px">操作</th>
+          </tr></thead>
+          <tbody id="order-tbody"></tbody>
+        </table>
+      </div>
+      <div class="pagination"><span id="order-count"></span><div class="page-btns"><button class="pg-btn active">1</button><button class="pg-btn">2</button><button class="pg-btn">3</button></div></div>
+    </div>
+
+    <!-- 10. 订单状态流转 -->
+    <div class="view" id="view-order-flow">
+      <div class="page-header"><span class="page-title">订单状态流转</span></div>
+      <div class="card" style="margin-bottom:16px">
+        <div class="card-head"><span class="card-title">状态流转图</span></div>
+        <div class="flow-wrap">
+          <div class="flow">
+            <div class="flow-node"><div class="fn-status">INIT</div><div class="fn-desc">初始化</div></div>
+            <span class="flow-arrow"><i class="ti ti-arrow-right"></i></span>
+            <div class="flow-node paying"><div class="fn-status">PAYING</div><div class="fn-desc">支付中</div></div>
+            <span class="flow-arrow"><i class="ti ti-arrow-right"></i></span>
+            <div class="flow-node success"><div class="fn-status">SUCCESS</div><div class="fn-desc">支付成功</div></div>
+            <span class="flow-arrow"><i class="ti ti-arrow-right"></i></span>
+            <div class="flow-node success"><div class="fn-status">CALLBACK_OK</div><div class="fn-desc">回调成功</div></div>
+            <div class="flow-branch" style="margin-left:14px">
+              <div class="flow-node failed"><div class="fn-status">FAILED</div><div class="fn-desc">支付失败</div></div>
+              <div class="flow-node failed"><div class="fn-status">CLOSED</div><div class="fn-desc">超时关闭</div></div>
+              <div class="flow-node warn-node"><div class="fn-status">REFUNDING</div><div class="fn-desc">退款中</div></div>
+              <div class="flow-node warn-node"><div class="fn-status">REFUNDED</div><div class="fn-desc">已退款</div></div>
+              <div class="flow-node warn-node"><div class="fn-status">PART_REF</div><div class="fn-desc">部分退款</div></div>
+              <div class="flow-node failed"><div class="fn-status">CB_FAILED</div><div class="fn-desc">回调失败</div></div>
+              <div class="flow-node failed"><div class="fn-status">RISK_HOLD</div><div class="fn-desc">风控挂起</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="font-size:14px;font-weight:600;margin-bottom:10px">状态变更记录</div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th style="width:170px">系统订单号</th><th style="width:130px">商户订单号</th><th style="width:130px">三方交易号</th>
+            <th style="width:90px">原状态</th><th style="width:100px">新状态</th><th style="width:100px">触发来源</th>
+            <th style="width:70px">结果</th><th style="width:80px">操作人</th><th style="width:130px">变更时间</th>
+          </tr></thead>
+          <tbody id="flow-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 11. 退款记录 -->
+    <div class="view" id="view-refund">
+      <div class="page-header"><span class="page-title">退款记录</span></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th style="width:150px">退款单号</th><th style="width:170px">原订单号</th><th style="width:110px">商户</th>
+            <th style="width:90px">退款金额</th><th style="width:90px">退款原因</th><th style="width:80px">状态</th>
+            <th style="width:130px">申请时间</th><th style="width:130px">退款完成时间</th><th style="width:80px">操作</th>
+          </tr></thead>
+          <tbody id="refund-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 12. 回调记录 -->
+    <div class="view" id="view-callback-log">
+      <div class="page-header"><span class="page-title">回调记录</span><div class="page-actions"><span class="badge b-red" id="callback-fail-badge">5 异常</span></div></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th style="width:170px">系统订单号</th><th style="width:110px">商户</th><th style="width:170px">回调地址</th>
+            <th style="width:80px">HTTP状态</th><th style="width:70px">重试次数</th><th style="width:80px">状态</th>
+            <th style="width:140px">最后推送时间</th><th style="width:90px">操作</th>
+          </tr></thead>
+          <tbody id="callback-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 13. 对账汇总 -->
+    <div class="view" id="view-reconcile-summary">
+      <div class="compliance-banner"><i class="ti ti-info-circle"></i>对账辅助中心仅提供本平台交易转接数据与合作收单机构数据的比对与差异展示，<strong>不代表本平台从事资金清算或结算业务。</strong>实际资金流转以合作收单机构数据为准。</div>
+      <div class="page-header"><span class="page-title">交易汇总</span></div>
+      <div class="metrics">
+        <div class="metric-card"><div class="metric-label"><i class="ti ti-receipt"></i>今日转接笔数</div><div class="metric-val">1,847</div></div>
+        <div class="metric-card"><div class="metric-label"><i class="ti ti-trending-up"></i>今日转接金额</div><div class="metric-val" style="color:var(--accent)">¥128,640</div><div class="metric-trend" style="color:var(--text3);font-size:10.5px">资金由收单机构处理</div></div>
+        <div class="metric-card" onclick="switchView('reconcile-diff')"><div class="metric-label"><i class="ti ti-file-diff"></i>差异订单</div><div class="metric-val warn" id="reco-diff-count">7</div><div class="metric-trend warn">待核对</div></div>
+        <div class="metric-card"><div class="metric-label"><i class="ti ti-check"></i>对账匹配率</div><div class="metric-val" style="color:var(--green)">99.6%</div></div>
+      </div>
+      <div class="card">
+        <div class="card-head"><span class="card-title">今日各通道汇总</span></div>
+        <table>
+          <thead><tr>
+            <th style="width:140px">合作收单机构</th><th style="width:90px">通道</th><th style="width:90px">本方订单数</th><th style="width:90px">本方金额</th>
+            <th style="width:90px">机构订单数</th><th style="width:90px">机构金额</th><th style="width:80px">差异笔数</th><th style="width:80px">差异金额</th><th style="width:80px">对账状态</th>
+          </tr></thead>
+          <tbody>
+            <tr><td>某银行</td><td>微信支付</td><td>1,144</td><td style="color:var(--accent)">¥79,740</td><td>1,144</td><td style="color:var(--accent)">¥79,740</td><td>0</td><td>¥0</td><td><span class="badge b-green">已平</span></td></tr>
+            <tr><td>某支付机构</td><td>支付宝</td><td>574</td><td style="color:var(--accent)">¥39,880</td><td>571</td><td style="color:var(--accent)">¥39,660</td><td style="color:var(--amber-text)">3</td><td style="color:var(--amber-text)">¥220</td><td><span class="badge b-amber">差异</span></td></tr>
+            <tr><td>某银联商务</td><td>银联</td><td>129</td><td style="color:var(--accent)">¥9,020</td><td>125</td><td style="color:var(--accent)">¥8,740</td><td style="color:var(--amber-text)">4</td><td style="color:var(--amber-text)">¥280</td><td><span class="badge b-amber">差异</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 14. 差异订单 -->
+    <div class="view" id="view-reconcile-diff">
+      <div class="page-header"><span class="page-title">差异订单</span><div class="page-actions"><span class="badge b-amber" id="diff-badge">7 待处理</span></div></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th style="width:170px">系统订单号</th><th style="width:110px">商户</th><th style="width:90px">本方金额</th>
+            <th style="width:90px">机构金额</th><th style="width:90px">差异金额</th><th style="width:110px">差异类型</th>
+            <th style="width:100px">合作机构</th><th style="width:80px">处理状态</th><th style="width:130px">操作</th>
+          </tr></thead>
+          <tbody id="diff-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 15. 风控规则 -->
+    <div class="view" id="view-risk-rules">
+      <div class="page-header"><span class="page-title">风控规则</span><div class="page-actions"><button class="btn btn-primary btn-sm" onclick="openModal('modal-rule-new')"><i class="ti ti-plus"></i>新增规则</button></div></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th style="width:90px">规则编号</th><th style="width:170px">规则名称</th><th style="width:90px">规则类型</th>
+            <th style="width:140px">触发条件</th><th style="width:90px">处置动作</th><th style="width:70px">状态</th>
+            <th style="width:90px">今日触发</th><th style="width:100px">操作</th>
+          </tr></thead>
+          <tbody id="risk-rules-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 16. 行业限制库 -->
+    <div class="view" id="view-industry-lib">
+      <div class="page-header"><span class="page-title">行业限制库</span><div class="page-actions"><button class="btn btn-primary btn-sm" onclick="openModal('modal-industry-new')"><i class="ti ti-plus"></i>新增行业</button></div></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th style="width:150px">行业名称</th><th style="width:90px">MCC</th><th style="width:80px">风险等级</th>
+            <th style="width:100px">是否允许入网</th><th style="width:90px">加强审核</th><th style="width:170px">需补充资料</th>
+            <th style="width:90px">单笔限额</th><th style="width:90px">单日限额</th><th style="width:90px">操作</th>
+          </tr></thead>
+          <tbody id="industry-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 17. 风险商户 -->
+    <div class="view" id="view-risk-merchants">
+      <div class="page-header"><span class="page-title">风险商户</span></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th style="width:130px">商户编号</th><th style="width:160px">商户名称</th><th style="width:80px">风险等级</th>
+            <th style="width:170px">风险原因</th><th style="width:120px">最近风险事件</th><th style="width:140px">当前处置措施</th><th style="width:130px">操作</th>
+          </tr></thead>
+          <tbody id="risk-merchants-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 18. 风险订单 -->
+    <div class="view" id="view-risk-orders">
+      <div class="page-header"><span class="page-title">风险订单</span><div class="page-actions"><span class="badge b-red" id="risk-orders-badge">2 待处理</span></div></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th style="width:170px">系统订单号</th><th style="width:110px">商户</th><th style="width:90px">金额</th>
+            <th style="width:90px">命中规则</th><th style="width:80px">风险等级</th><th style="width:100px">处置动作</th>
+            <th style="width:90px">处理状态</th><th style="width:130px">触发时间</th><th style="width:100px">操作</th>
+          </tr></thead>
+          <tbody id="risk-orders-tbody-2"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 19. 黑名单 -->
+    <div class="view" id="view-blacklist">
+      <div class="page-header"><span class="page-title">黑名单管理</span><div class="page-actions"><button class="btn btn-primary btn-sm" onclick="openModal('modal-blacklist-add')"><i class="ti ti-plus"></i>添加</button></div></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th style="width:90px">类型</th><th style="width:200px">黑名单标识</th><th style="width:120px">关联商户</th>
+            <th style="width:120px">加入原因</th><th style="width:90px">来源</th><th style="width:110px">加入时间</th><th style="width:90px">操作</th>
+          </tr></thead>
+          <tbody id="blacklist-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 20. 通道配置 -->
+    <div class="view" id="view-channel-config">
+      <div class="page-header"><span class="page-title">通道配置</span><div class="page-actions"><span style="font-size:11.5px;color:var(--text3)"><i class="ti ti-info-circle" style="vertical-align:-2px"></i> 通道由合作收单机构提供，仅技术接入配置</span></div></div>
+      <div class="grid3" id="channel-cards"></div>
+    </div>
+
+    <!-- 21. 商户开发者 -->
+    <div class="view" id="view-developer">
+      <div class="page-header"><span class="page-title">商户开发者管理</span></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th style="width:120px">商户编号</th><th style="width:140px">商户名称</th><th style="width:160px">AppID</th>
+            <th style="width:70px">API状态</th><th style="width:160px">回调地址</th><th style="width:120px">IP白名单</th>
+            <th style="width:100px">签名方式</th><th style="width:130px">最近调用</th><th style="width:130px">操作</th>
+          </tr></thead>
+          <tbody id="developer-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 22. 接口密钥 -->
+    <div class="view" id="view-api-keys">
+      <div class="page-header"><span class="page-title">接口密钥管理</span></div>
+      <div class="compliance-banner"><i class="ti ti-lock"></i>密钥为敏感信息，仅展示脱敏数据。完整密钥需经审批后通过安全渠道线下交付商户。所有密钥访问行为均记入<strong>敏感信息访问记录</strong>。</div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th style="width:120px">商户编号</th><th style="width:140px">商户名称</th><th style="width:160px">AppID</th>
+            <th style="width:200px">API Key（脱敏）</th><th style="width:90px">签名方式</th><th style="width:80px">公钥状态</th>
+            <th style="width:110px">密钥生成时间</th><th style="width:130px">操作</th>
+          </tr></thead>
+          <tbody id="apikey-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 23. 合作机构 -->
+    <div class="view" id="view-partner-list">
+      <div class="page-header"><span class="page-title">合作收单机构管理</span><div class="page-actions"><button class="btn btn-primary btn-sm" onclick="openModal('modal-partner-new')"><i class="ti ti-plus"></i>新增合作机构</button></div></div>
+      <div class="compliance-banner"><i class="ti ti-building-bank"></i>本平台作为收单外包技术服务机构，与以下持牌收单机构 / 银行签订合作协议。<strong>资金清算由合作机构独立完成，本平台不介入资金流。</strong></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th style="width:90px">机构编号</th><th style="width:170px">合作机构名称</th><th style="width:100px">机构类型</th>
+            <th style="width:90px">合作状态</th><th style="width:130px">合作协议编号</th><th style="width:130px">接入通道</th>
+            <th style="width:100px">技术联系人</th><th style="width:100px">合规联系人</th><th style="width:100px">合作开始时间</th><th style="width:140px">操作</th>
+          </tr></thead>
+          <tbody id="partner-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 24. 备案信息 -->
+    <div class="view" id="view-license">
+      <div class="page-header"><span class="page-title">收单外包备案信息</span></div>
+      <div class="compliance-banner"><i class="ti ti-certificate"></i>本页面用于记录公司作为收单外包服务机构的备案信息及合作资质，仅作内部合规管理与合作机构审核留痕使用。</div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th style="width:170px">备案主体名称</th><th style="width:170px">统一社会信用代码</th><th style="width:130px">备案编号</th>
+            <th style="width:140px">备案类型</th><th style="width:90px">备案状态</th><th style="width:80px">有效状态</th>
+            <th style="width:120px">最近更新</th><th style="width:130px">操作</th>
+          </tr></thead>
+          <tbody>
+            <tr onclick="openModal('modal-license-detail')">
+              <td style="font-weight:500">某科技有限公司</td>
+              <td class="mono">91110108XXXXXXXXXX</td>
+              <td class="mono">SWBJ-2024-XXXX</td>
+              <td>聚合支付技术服务</td>
+              <td><span class="badge b-green"><span class="b-dot" style="background:var(--green)"></span>已备案</span></td>
+              <td><span class="badge b-green">有效</span></td>
+              <td class="mono" style="font-size:11px">2024-03-15</td>
+              <td onclick="event.stopPropagation()" style="display:flex;gap:4px">
+                <button class="btn btn-ghost btn-sm" onclick="openModal('modal-license-detail')">查看</button>
+                <button class="btn btn-ghost btn-sm" onclick="toast('附件上传成功','success')">上传附件</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 25. 外包服务范围 -->
+    <div class="view" id="view-scope">
+      <div class="page-header"><span class="page-title">外包服务范围</span></div>
+      <div class="compliance-banner"><i class="ti ti-shield-check"></i>以下服务范围依据《收单外包服务机构备案管理办法（试行）》及与合作收单机构签订的外包服务协议确定。</div>
+      <div class="scope-grid">
+        <div class="scope-card allow">
+          <div class="scope-head">
+            <div class="scope-head-icon allow"><i class="ti ti-check"></i></div>
+            <div style="font-size:14px;font-weight:600;color:var(--green-text)">允许服务范围</div>
+          </div>
+          <div class="scope-item allow"><i class="ti ti-check-circle"></i>商户资料收集与初步核验</div>
+          <div class="scope-item allow"><i class="ti ti-check-circle"></i>交易信息技术转接</div>
+          <div class="scope-item allow"><i class="ti ti-check-circle"></i>收款码生成与管理</div>
+          <div class="scope-item allow"><i class="ti ti-check-circle"></i>订单状态查询与推送</div>
+          <div class="scope-item allow"><i class="ti ti-check-circle"></i>回调通知技术服务</div>
+          <div class="scope-item allow"><i class="ti ti-check-circle"></i>对账数据辅助展示</div>
+          <div class="scope-item allow"><i class="ti ti-check-circle"></i>风控预警（仅通知，不扣款）</div>
+          <div class="scope-item allow"><i class="ti ti-check-circle"></i>技术接口开发与支持</div>
+          <div class="scope-item allow"><i class="ti ti-check-circle"></i>受理标识张贴与维护</div>
+        </div>
+        <div class="scope-card deny">
+          <div class="scope-head">
+            <div class="scope-head-icon deny"><i class="ti ti-x"></i></div>
+            <div style="font-size:14px;font-weight:600;color:var(--red-text)">禁止行为（合规红线）</div>
+          </div>
+          <div class="scope-item deny"><i class="ti ti-ban"></i>代收商户交易资金</div>
+          <div class="scope-item deny"><i class="ti ti-ban"></i>沉淀商户交易资金</div>
+          <div class="scope-item deny"><i class="ti ti-ban"></i>以自身名义提供支付服务</div>
+          <div class="scope-item deny"><i class="ti ti-ban"></i>从事资金清算业务</div>
+          <div class="scope-item deny"><i class="ti ti-ban"></i>违规二清行为</div>
+          <div class="scope-item deny"><i class="ti ti-ban"></i>擅自变更商户结算路径</div>
+          <div class="scope-item deny"><i class="ti ti-ban"></i>商户余额管理 / 提现代付</div>
+          <div class="scope-item deny"><i class="ti ti-ban"></i>平台账户沉淀资金</div>
+          <div class="scope-item deny"><i class="ti ti-ban"></i>超越备案范围开展业务</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 26. 合规检查清单 -->
+    <div class="view" id="view-compliance-check">
+      <div class="page-header"><span class="page-title">合规检查清单</span><div class="page-actions"><button class="btn btn-ghost btn-sm" onclick="toast('合规检查报告已导出','success')"><i class="ti ti-download"></i>导出报告</button></div></div>
+      <div class="card">
+        <div class="check-section">
+          <div class="check-title">备案合规</div>
+          <div class="check-item"><div class="ci-icon ci-done"><i class="ti ti-check"></i></div><div style="flex:1">收单外包服务机构备案已完成（中国支付清算协会）</div><span class="badge b-green">已完成</span></div>
+          <div class="check-item"><div class="ci-icon ci-done"><i class="ti ti-check"></i></div><div style="flex:1">备案信息公示页面正常展示</div><span class="badge b-green">正常</span></div>
+          <div class="check-item"><div class="ci-icon ci-pending"><i class="ti ti-clock"></i></div><div style="flex:1">备案年度复核（需在 2024-06-30 前完成）</div><span class="badge b-amber">待处理</span><button class="btn btn-ghost btn-sm" onclick="handleCompliance(this,'备案年度复核')">处理</button></div>
+        </div>
+        <div class="check-section">
+          <div class="check-title">合作机构</div>
+          <div class="check-item"><div class="ci-icon ci-done"><i class="ti ti-check"></i></div><div style="flex:1">所有合作机构均为持牌收单机构 / 银行</div><span class="badge b-green">已验证</span></div>
+          <div class="check-item"><div class="ci-icon ci-done"><i class="ti ti-check"></i></div><div style="flex:1">合作协议已签署并归档</div><span class="badge b-green">已完成</span></div>
+          <div class="check-item"><div class="ci-icon ci-pending"><i class="ti ti-clock"></i></div><div style="flex:1">某银联商务合作协议到期续签</div><span class="badge b-amber">2024-07-01 到期</span><button class="btn btn-ghost btn-sm" onclick="handleCompliance(this,'协议续签')">处理</button></div>
+        </div>
+        <div class="check-section">
+          <div class="check-title">系统安全（等保三级准备）</div>
+          <div class="check-item"><div class="ci-icon ci-done"><i class="ti ti-check"></i></div><div style="flex:1">操作审计日志已启用（保留 180 天以上）</div><span class="badge b-green">已完成</span></div>
+          <div class="check-item"><div class="ci-icon ci-done"><i class="ti ti-check"></i></div><div style="flex:1">敏感字段 AES-256-GCM 加密存储</div><span class="badge b-green">已完成</span></div>
+          <div class="check-item"><div class="ci-icon ci-done"><i class="ti ti-check"></i></div><div style="flex:1">API 签名机制（HMAC-SHA256 + 防重放）</div><span class="badge b-green">已完成</span></div>
+          <div class="check-item"><div class="ci-icon ci-warn"><i class="ti ti-x"></i></div><div style="flex:1">等保三级测评尚未开始</div><span class="badge b-red">待启动</span><button class="btn btn-primary btn-sm" onclick="toast('已联系测评机构','success')">立即启动</button></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 27 登录日志 -->
+    <div class="view" id="view-login-log">
+      <div class="page-header"><span class="page-title">登录日志</span></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th style="width:110px">账号</th><th style="width:90px">角色</th><th style="width:120px">登录IP</th><th style="width:110px">IP归属地</th><th style="width:80px">状态</th><th style="width:140px">登录时间</th><th style="width:120px">设备</th></tr></thead>
+          <tbody>
+            <tr><td>admin</td><td>超级管理员</td><td class="mono">10.0.1.100</td><td>内网</td><td><span class="badge b-green">成功</span></td><td class="mono" style="font-size:11px">2024-05-20 09:00:12</td><td style="color:var(--text2)">Chrome/Win</td></tr>
+            <tr><td>operator_01</td><td>运营</td><td class="mono">221.180.75.xxx</td><td>北京市</td><td><span class="badge b-red">失败</span></td><td class="mono" style="font-size:11px">2024-05-20 08:45:03</td><td style="color:var(--text2)">Safari/Mac</td></tr>
+            <tr><td>auditor_01</td><td>审计</td><td class="mono">10.0.1.105</td><td>内网</td><td><span class="badge b-green">成功</span></td><td class="mono" style="font-size:11px">2024-05-20 08:30:00</td><td style="color:var(--text2)">Firefox/Win</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 28 操作日志 -->
+    <div class="view" id="view-op-log">
+      <div class="page-header"><span class="page-title">操作日志</span></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th style="width:90px">操作人</th><th style="width:100px">操作模块</th><th style="width:200px">操作描述</th><th style="width:130px">操作对象</th><th style="width:110px">客户端IP</th><th style="width:70px">结果</th><th style="width:140px">操作时间</th></tr></thead>
+          <tbody id="op-log-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 29 数据导出记录 -->
+    <div class="view" id="view-export-log">
+      <div class="page-header"><span class="page-title">数据导出记录</span></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th style="width:110px">导出编号</th><th style="width:90px">导出人</th><th style="width:100px">导出模块</th><th style="width:170px">导出字段</th><th style="width:110px">导出原因</th><th style="width:130px">导出时间</th><th style="width:110px">下载IP</th><th style="width:80px">审批状态</th><th style="width:110px">水印编号</th><th style="width:80px">操作</th></tr></thead>
+          <tbody>
+            <tr><td class="mono">EXP20240520001</td><td>admin</td><td>订单管理</td><td style="color:var(--text2);font-size:11.5px">订单号,金额,状态,时间</td><td style="color:var(--text2)">对账核查</td><td class="mono" style="font-size:11px">2024-05-20 11:00</td><td class="mono">10.0.1.100</td><td><span class="badge b-green">已审批</span></td><td class="mono" style="font-size:11px">WM20240520001</td><td><button class="btn btn-ghost btn-sm" onclick="toast('查看导出详情','info')">查看</button></td></tr>
+            <tr><td class="mono">EXP20240519003</td><td>auditor_01</td><td>商户管理</td><td style="color:var(--text2);font-size:11.5px">商户名,信用代码,状态</td><td style="color:var(--text2)">年度审计</td><td class="mono" style="font-size:11px">2024-05-19 14:30</td><td class="mono">10.0.1.105</td><td><span class="badge b-green">已审批</span></td><td class="mono" style="font-size:11px">WM20240519003</td><td><button class="btn btn-ghost btn-sm" onclick="toast('查看导出详情','info')">查看</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 30 安全告警 -->
+    <div class="view" id="view-security-alert">
+      <div class="page-header"><span class="page-title">安全告警记录</span><div class="page-actions"><span class="badge b-red" id="alert-pending-badge">2 待处理</span></div></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th style="width:110px">告警编号</th><th style="width:130px">告警类型</th><th style="width:70px">等级</th><th style="width:100px">触发账号</th><th style="width:130px">触发IP</th><th style="width:130px">触发时间</th><th style="width:90px">处理状态</th><th style="width:80px">处理人</th><th style="width:100px">操作</th></tr></thead>
+          <tbody id="alert-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 31 设置 -->
+    <div class="view" id="view-settings">
+      <div class="page-header"><span class="page-title">系统设置</span></div>
+      <div class="grid2">
+        <div class="card">
+          <div class="card-head"><span class="card-title">企业信息</span></div>
+          <div class="form-group" style="margin-bottom:12px"><label>企业名称</label><input type="text" value="某科技有限公司"></div>
+          <div class="form-group" style="margin-bottom:12px"><label>统一社会信用代码</label><input type="text" value="91110108XXXXXXXXXX"></div>
+          <div class="form-group" style="margin-bottom:12px"><label>备案编号</label><input type="text" value="SWBJ-2024-XXXX"></div>
+          <div class="form-group" style="margin-bottom:16px"><label>法定代表人</label><input type="text" value="张●●"></div>
+          <button class="btn btn-primary btn-sm" onclick="toast('企业信息已保存','success')"><i class="ti ti-check"></i>保存</button>
+        </div>
+        <div class="card">
+          <div class="card-head"><span class="card-title">系统参数</span></div>
+          <div class="form-group" style="margin-bottom:12px"><label>订单超时时间（分钟）</label><input type="text" value="30"></div>
+          <div class="form-group" style="margin-bottom:12px"><label>商户通知最大重试次数</label><input type="text" value="8"></div>
+          <div class="form-group" style="margin-bottom:12px"><label>日志保留天数（等保要求 ≥180）</label><input type="text" value="365"></div>
+          <div class="form-group" style="margin-bottom:16px"><label>单笔默认限额（元）</label><input type="text" value="5000"></div>
+          <button class="btn btn-primary btn-sm" onclick="toast('系统参数已保存','success')"><i class="ti ti-check"></i>保存</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 占位视图 -->
+    <div class="view" id="view-store"><div class="empty-state"><i class="ti ti-building-store"></i><div class="es-title">门店管理</div><div class="es-desc">功能开发中</div></div></div>
+    <div class="view" id="view-agreement-archive"><div class="empty-state"><i class="ti ti-files"></i><div class="es-title">商户协议归档</div><div class="es-desc">功能开发中</div></div></div>
+    <div class="view" id="view-qr-new"><div class="empty-state"><i class="ti ti-qrcode"></i><div class="es-title">新增收款码</div><div class="es-desc">请通过收款码列表的「新增收款码」按钮发起</div></div></div>
+    <div class="view" id="view-qr-download"><div class="empty-state"><i class="ti ti-download"></i><div class="es-title">码牌下载</div><div class="es-desc">功能开发中</div></div></div>
+    <div class="view" id="view-qr-status"><div class="empty-state"><i class="ti ti-toggle-right"></i><div class="es-title">收款码状态管理</div><div class="es-desc">请前往「收款码列表」页面操作</div></div></div>
+    <div class="view" id="view-order-exception"><div class="empty-state"><i class="ti ti-alert-circle"></i><div class="es-title">异常订单</div><div class="es-desc">请前往「订单列表」并筛选失败 / 风控挂起状态</div></div></div>
+    <div class="view" id="view-reconcile-upload"><div class="empty-state"><i class="ti ti-upload"></i><div class="es-title">对账文件上传</div><div class="es-desc">功能开发中</div></div></div>
+    <div class="view" id="view-reconcile-report"><div class="empty-state"><i class="ti ti-report"></i><div class="es-title">对账报告导出</div><div class="es-desc">功能开发中</div></div></div>
+    <div class="view" id="view-reconcile-diff-log"><div class="empty-state"><i class="ti ti-clipboard-list"></i><div class="es-title">差异处理记录</div><div class="es-desc">功能开发中</div></div></div>
+    <div class="view" id="view-risk-handle"><div class="empty-state"><i class="ti ti-clipboard-check"></i><div class="es-title">风险处理记录</div><div class="es-desc">功能开发中</div></div></div>
+    <div class="view" id="view-api-log"><div class="empty-state"><i class="ti ti-api"></i><div class="es-title">API请求日志</div><div class="es-desc">功能开发中</div></div></div>
+    <div class="view" id="view-api-exception"><div class="empty-state"><i class="ti ti-bug"></i><div class="es-title">接口异常监控</div><div class="es-desc">功能开发中</div></div></div>
+    <div class="view" id="view-sandbox"><div class="empty-state"><i class="ti ti-test-pipe"></i><div class="es-title">沙箱测试</div><div class="es-desc">功能开发中</div></div></div>
+    <div class="view" id="view-partner-agreement"><div class="empty-state"><i class="ti ti-files"></i><div class="es-title">合作协议归档</div><div class="es-desc">功能开发中</div></div></div>
+    <div class="view" id="view-partner-cert"><div class="empty-state"><i class="ti ti-certificate-2"></i><div class="es-title">资质文件管理</div><div class="es-desc">功能开发中</div></div></div>
+    <div class="view" id="view-sensitive-log"><div class="page-header"><span class="page-title">敏感信息访问记录</span><div class="page-actions"><button class="btn btn-ghost btn-sm" onclick="switchView('info-lifecycle')"><i class="ti ti-external-link"></i>查看完整信息生命周期</button></div></div><div class="compliance-banner"><i class="ti ti-eye"></i>所有对 C2 / C3 类敏感字段的明文访问均需经审批，<strong>访问行为全量留痕</strong>，用于评测时溯源审计。本页面展示访问记录的"使用"环节切片，完整生命周期请前往「信息生命周期管理」。</div><div class="table-wrap"><table><thead><tr><th style="width:130px">访问记录编号</th><th style="width:80px">分级</th><th style="width:140px">字段</th><th style="width:120px">关联商户</th><th style="width:100px">访问人</th><th style="width:120px">访问原因</th><th style="width:90px">审批状态</th><th style="width:140px">访问时间</th></tr></thead><tbody id="sensitive-tbody"></tbody></table></div></div>
+    <div class="view" id="view-permission-log"><div class="empty-state"><i class="ti ti-key"></i><div class="es-title">权限变更记录</div><div class="es-desc">功能开发中</div></div></div>
+    <div class="view" id="view-account-mgmt"><div class="empty-state"><i class="ti ti-user-cog"></i><div class="es-title">账号管理</div><div class="es-desc">功能开发中</div></div></div>
+    <div class="view" id="view-role-perm"><div class="empty-state"><i class="ti ti-shield"></i><div class="es-title">角色权限</div><div class="es-desc">功能开发中</div></div></div>
+    <div class="view" id="view-approve-flow"><div class="empty-state"><i class="ti ti-git-branch"></i><div class="es-title">审批流程配置</div><div class="es-desc">功能开发中</div></div></div>
+    <!-- ═════════════════════════════════════ -->
+    <!-- ══ 新增评测合规技术能力模块（V4 新增）══ -->
+    <!-- ═════════════════════════════════════ -->
+
+    <!-- 数据分级 (JR/T 0171 C1/C2/C3) -->
+    <div class="view" id="view-data-classification">
+      <div class="page-header"><span class="page-title">数据分级管理</span><div class="page-actions"><span style="font-size:11.5px;color:var(--text3)"><i class="ti ti-shield" style="vertical-align:-2px"></i> 依据 JR/T 0171-2020 个人金融信息保护技术规范</span></div></div>
+      <div class="compliance-banner"><i class="ti ti-info-circle"></i>根据《个人金融信息保护技术规范》(JR/T 0171-2020)，<strong>个人金融信息按敏感程度分为 C1 / C2 / C3 三个类别。</strong>不同类别采用不同的存储、传输、展示、访问控制策略。本平台严格按照该标准对所有客户信息进行分级管理。</div>
+
+      <div class="metrics">
+        <div class="metric-card" style="border-top:3px solid var(--red)">
+          <div class="metric-label"><i class="ti ti-lock"></i>C3 类（用户鉴别信息）</div>
+          <div class="metric-val" style="color:var(--red)">最高敏感</div>
+          <div class="metric-trend" style="color:var(--text2);font-size:11px">银行卡磁道数据、CVN、密码、私钥</div>
+        </div>
+        <div class="metric-card" style="border-top:3px solid var(--amber)">
+          <div class="metric-label"><i class="ti ti-shield"></i>C2 类（可识别身份信息）</div>
+          <div class="metric-val" style="color:var(--amber)">较高敏感</div>
+          <div class="metric-trend" style="color:var(--text2);font-size:11px">银行卡号、手机号、证件号</div>
+        </div>
+        <div class="metric-card" style="border-top:3px solid var(--green)">
+          <div class="metric-label"><i class="ti ti-info-circle"></i>C1 类（机构内部信息）</div>
+          <div class="metric-val" style="color:var(--green)">一般敏感</div>
+          <div class="metric-trend" style="color:var(--text2);font-size:11px">账户开立时间、支付标记</div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:16px">
+        <div class="card-head">
+          <span class="card-title">字段分级清单</span>
+          <button class="btn btn-primary btn-sm" onclick="openModal('modal-field-new')"><i class="ti ti-plus"></i>新增字段分级</button>
+        </div>
+        <table>
+          <thead><tr>
+            <th style="width:160px">字段名称</th><th style="width:80px">分级</th><th style="width:120px">所属业务</th>
+            <th style="width:110px">存储要求</th><th style="width:110px">传输要求</th><th style="width:120px">展示要求</th>
+            <th style="width:120px">访问控制</th><th style="width:90px">操作</th>
+          </tr></thead>
+          <tbody id="field-classification-tbody"></tbody>
+        </table>
+      </div>
+
+      <div class="grid2">
+        <div class="card">
+          <div class="card-head"><span class="card-title">C3 类处理规则（强制）</span></div>
+          <div style="font-size:12.5px;line-height:1.8;color:var(--text)">
+            <div style="padding:5px 0"><i class="ti ti-check" style="color:var(--green);vertical-align:-2px"></i> 严禁明文存储（银行卡有效期除外）</div>
+            <div style="padding:5px 0"><i class="ti ti-check" style="color:var(--green);vertical-align:-2px"></i> 严禁本平台留存（仅作转发，不沉淀）</div>
+            <div style="padding:5px 0"><i class="ti ti-check" style="color:var(--green);vertical-align:-2px"></i> 传输使用 TLS 1.2+ 国密 SM2/SM4</div>
+            <div style="padding:5px 0"><i class="ti ti-check" style="color:var(--green);vertical-align:-2px"></i> 后台不展示，导出二次审批</div>
+            <div style="padding:5px 0"><i class="ti ti-check" style="color:var(--green);vertical-align:-2px"></i> 仅指定角色 + IP 白名单访问</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head"><span class="card-title">C2 类处理规则</span></div>
+          <div style="font-size:12.5px;line-height:1.8;color:var(--text)">
+            <div style="padding:5px 0"><i class="ti ti-check" style="color:var(--green);vertical-align:-2px"></i> 存储使用 AES-256-GCM 加密</div>
+            <div style="padding:5px 0"><i class="ti ti-check" style="color:var(--green);vertical-align:-2px"></i> 传输使用 HTTPS + 字段级加密</div>
+            <div style="padding:5px 0"><i class="ti ti-check" style="color:var(--green);vertical-align:-2px"></i> 后台默认脱敏展示</div>
+            <div style="padding:5px 0"><i class="ti ti-check" style="color:var(--green);vertical-align:-2px"></i> 明文查看需审批 + 留痕</div>
+            <div style="padding:5px 0"><i class="ti ti-check" style="color:var(--green);vertical-align:-2px"></i> 散列防碰撞推导</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 信息生命周期 -->
+    <div class="view" id="view-info-lifecycle">
+      <div class="page-header"><span class="page-title">客户信息生命周期管理</span></div>
+      <div class="compliance-banner"><i class="ti ti-recycle"></i>本模块根据 JR/T 0171 标准，覆盖客户信息<strong>收集、传输、存储、使用、删除、销毁</strong>六个生命周期环节，每个环节均有对应的安全策略与审计留痕。</div>
+
+      <!-- 生命周期阶段卡片 -->
+      <div class="card" style="margin-bottom:16px">
+        <div class="card-head"><span class="card-title">六阶段安全策略概览</span></div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px" id="lifecycle-stages"></div>
+      </div>
+
+      <!-- 操作记录 -->
+      <div class="card-head" style="margin-bottom:10px"><span class="page-title" style="font-size:14px">生命周期操作记录</span></div>
+      <div class="table-wrap">
+        <div class="table-toolbar">
+          <select id="lc-filter-stage" onchange="renderLifecycleLogs()"><option value="">全部阶段</option><option>收集</option><option>传输</option><option>存储</option><option>使用</option><option>删除</option><option>销毁</option></select>
+          <select id="lc-filter-class" onchange="renderLifecycleLogs()"><option value="">全部分级</option><option>C3</option><option>C2</option><option>C1</option></select>
+        </div>
+        <table>
+          <thead><tr>
+            <th style="width:140px">记录编号</th><th style="width:80px">阶段</th><th style="width:80px">数据分级</th>
+            <th style="width:140px">字段</th><th style="width:120px">关联商户</th><th style="width:100px">操作人</th>
+            <th style="width:100px">操作来源</th><th style="width:140px">操作时间</th><th style="width:80px">结果</th>
+          </tr></thead>
+          <tbody id="lifecycle-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 脱敏配置 -->
+    <div class="view" id="view-mask-config">
+      <div class="page-header"><span class="page-title">数据脱敏配置</span><div class="page-actions"><button class="btn btn-primary btn-sm" onclick="openModal('modal-mask-new')"><i class="ti ti-plus"></i>新增脱敏规则</button></div></div>
+      <div class="compliance-banner"><i class="ti ti-eye-off"></i>脱敏规则按 <strong>字段 × 角色</strong> 二维管理。同一字段对不同角色可以采用不同脱敏策略，明文查看必须经过审批且记入<strong>敏感信息访问记录</strong>。</div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th style="width:130px">字段名称</th><th style="width:80px">分级</th><th style="width:110px">脱敏角色</th>
+            <th style="width:130px">脱敏策略</th><th style="width:130px">示例（脱敏前→脱敏后）</th>
+            <th style="width:100px">明文需审批</th><th style="width:70px">状态</th><th style="width:110px">操作</th>
+          </tr></thead>
+          <tbody id="mask-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 数据删除 / 销毁记录 -->
+    <div class="view" id="view-data-destruction">
+      <div class="page-header"><span class="page-title">数据删除 / 销毁记录</span></div>
+      <div class="compliance-banner"><i class="ti ti-trash"></i>客户信息删除需<strong>双人复核 + 审批</strong>，物理销毁需出具《销毁记录单》留档备查。所有销毁操作不可恢复。</div>
+      <div class="metrics">
+        <div class="metric-card"><div class="metric-label"><i class="ti ti-eraser"></i>本月逻辑删除</div><div class="metric-val">23</div></div>
+        <div class="metric-card"><div class="metric-label"><i class="ti ti-flame"></i>本月物理销毁</div><div class="metric-val">5</div></div>
+        <div class="metric-card"><div class="metric-label"><i class="ti ti-clipboard-check"></i>待审批</div><div class="metric-val warn">2</div></div>
+        <div class="metric-card"><div class="metric-label"><i class="ti ti-files"></i>销毁记录单</div><div class="metric-val">28</div></div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th style="width:130px">记录编号</th><th style="width:80px">删除类型</th><th style="width:120px">关联商户</th>
+            <th style="width:120px">数据类型</th><th style="width:60px">分级</th><th style="width:80px">数据量</th>
+            <th style="width:90px">申请人</th><th style="width:90px">复核人</th><th style="width:80px">状态</th>
+            <th style="width:120px">销毁时间</th><th style="width:100px">操作</th>
+          </tr></thead>
+          <tbody id="destruction-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 密钥全生命周期管理 -->
+    <div class="view" id="view-key-mgmt">
+      <div class="page-header"><span class="page-title">密钥全生命周期管理</span><div class="page-actions"><button class="btn btn-primary btn-sm" onclick="toast('密钥生成需 HSM 硬件支持','info')"><i class="ti ti-plus"></i>生成新密钥</button></div></div>
+      <div class="compliance-banner"><i class="ti ti-key"></i>所有密钥按<strong>生成 → 分发 → 使用 → 轮换 → 撤销 → 销毁</strong>六阶段管理。主密钥存储于 HSM 硬件密码模块，工作密钥定期轮换，密钥访问行为全量审计。</div>
+      <div class="grid3" style="margin-bottom:16px">
+        <div class="card">
+          <div class="card-head"><span class="card-title">主密钥（MMK）</span><span class="badge b-green">HSM 保护</span></div>
+          <div style="font-size:12.5px;line-height:1.8;color:var(--text2)">
+            <div>密钥用途：根密钥</div>
+            <div>算法：<span class="mono">SM4-256 / AES-256</span></div>
+            <div>存储位置：<strong style="color:var(--text)">HSM 硬件密码机</strong></div>
+            <div>密钥版本：<span class="mono">MMK_V3</span></div>
+            <div>生成时间：<span class="mono">2024-01-15</span></div>
+            <div>下次轮换：<span class="mono">2025-01-15</span></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head"><span class="card-title">数据加密密钥（DEK）</span><span class="badge b-green">使用中</span></div>
+          <div style="font-size:12.5px;line-height:1.8;color:var(--text2)">
+            <div>密钥用途：业务数据加密</div>
+            <div>算法：<span class="mono">AES-256-GCM</span></div>
+            <div>密钥版本：<span class="mono">DEK_V7</span></div>
+            <div>历史版本：6 个（保留解密能力）</div>
+            <div>轮换周期：<strong style="color:var(--text)">90 天</strong></div>
+            <div>距下次轮换：<span style="color:var(--amber-text)">23 天</span></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head"><span class="card-title">签名密钥（RSA / SM2）</span><span class="badge b-green">正常</span></div>
+          <div style="font-size:12.5px;line-height:1.8;color:var(--text2)">
+            <div>密钥用途：API 签名验证</div>
+            <div>算法：<span class="mono">RSA-2048 + SM2</span></div>
+            <div>商户公钥数：<strong style="color:var(--text)">238</strong></div>
+            <div>平台密钥对：<span class="mono">PSK_V2</span></div>
+            <div>商户密钥到期：<span style="color:var(--amber-text)">3 个即将到期</span></div>
+            <div>轮换记录：<span class="mono">42 次</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-head" style="margin-bottom:10px"><span class="page-title" style="font-size:14px">密钥操作记录</span></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th style="width:130px">记录编号</th><th style="width:110px">密钥标识</th><th style="width:80px">密钥类型</th>
+            <th style="width:80px">操作</th><th style="width:90px">操作人</th><th style="width:130px">操作时间</th>
+            <th style="width:110px">审批人</th><th style="width:70px">结果</th><th style="width:90px">操作</th>
+          </tr></thead>
+          <tbody id="key-mgmt-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 外部黑名单 / 风险信息共享 -->
+    <div class="view" id="view-external-blacklist">
+      <div class="page-header"><span class="page-title">外部黑名单与风险信息共享</span><div class="page-actions"><button class="btn btn-primary btn-sm" onclick="syncExternalBlacklist()"><i class="ti ti-refresh"></i>同步外部黑名单</button></div></div>
+      <div class="compliance-banner"><i class="ti ti-share"></i>本模块对接<strong>中国支付清算协会黑名单库、合作收单机构风险信息</strong>，自动同步外部风险数据；同时按《收单外包服务评价管理规范》要求，将本平台核实的风险信息上报合作机构与协会。</div>
+
+      <div class="metrics">
+        <div class="metric-card"><div class="metric-label"><i class="ti ti-download"></i>外部黑名单条数</div><div class="metric-val">1,247</div><div class="metric-trend" style="color:var(--text2)">协会 + 3 家合作机构</div></div>
+        <div class="metric-card"><div class="metric-label"><i class="ti ti-upload"></i>本月上报次数</div><div class="metric-val">7</div></div>
+        <div class="metric-card"><div class="metric-label"><i class="ti ti-target"></i>命中拦截</div><div class="metric-val warn">14</div><div class="metric-trend warn">本月</div></div>
+        <div class="metric-card"><div class="metric-label"><i class="ti ti-clock"></i>上次同步</div><div class="metric-val" style="font-size:13px;color:var(--green)">3 分钟前</div><div class="metric-trend" style="color:var(--text2);font-size:11px">每 30 分钟自动同步</div></div>
+      </div>
+
+      <div class="tabs">
+        <div class="tab active" onclick="switchExtBlTab(event,'ext-bl-incoming')">外部接收（来自协会 / 收单机构）</div>
+        <div class="tab" onclick="switchExtBlTab(event,'ext-bl-outgoing')">本平台上报（向协会 / 收单机构）</div>
+        <div class="tab" onclick="switchExtBlTab(event,'ext-bl-channels')">共享通道配置</div>
+      </div>
+      <div class="tab-content active" id="ext-bl-incoming">
+        <div class="table-wrap">
+          <table>
+            <thead><tr>
+              <th style="width:100px">来源</th><th style="width:110px">风险类型</th><th style="width:70px">等级</th>
+              <th style="width:200px">风险标识</th><th style="width:140px">关联主体</th>
+              <th style="width:110px">接收时间</th><th style="width:90px">本平台命中</th><th style="width:110px">操作</th>
+            </tr></thead>
+            <tbody id="ext-bl-incoming-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="tab-content" id="ext-bl-outgoing">
+        <div class="table-wrap">
+          <table>
+            <thead><tr>
+              <th style="width:120px">上报编号</th><th style="width:110px">风险类型</th><th style="width:70px">等级</th>
+              <th style="width:160px">风险主体</th><th style="width:140px">上报方向</th>
+              <th style="width:90px">上报人</th><th style="width:110px">上报时间</th><th style="width:90px">接收状态</th>
+            </tr></thead>
+            <tbody id="ext-bl-outgoing-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="tab-content" id="ext-bl-channels">
+        <div class="grid2" style="margin-bottom:0">
+          <div class="card"><div class="card-head"><span class="card-title">中国支付清算协会</span><span class="badge b-green">已对接</span></div><div style="font-size:12.5px;line-height:1.8;color:var(--text2)"><div>接口：<span class="mono">协会风险信息共享平台 API v2.1</span></div><div>同步频率：<strong style="color:var(--text)">每 30 分钟</strong></div><div>认证方式：双向 mTLS + SM2 签名</div><div>最后同步：<span class="mono">3 分钟前</span></div><div>累计接收：1,089 条</div></div></div>
+          <div class="card"><div class="card-head"><span class="card-title">某银行（合作机构）</span><span class="badge b-green">已对接</span></div><div style="font-size:12.5px;line-height:1.8;color:var(--text2)"><div>接口：<span class="mono">SFTP 文件交换</span></div><div>同步频率：<strong style="color:var(--text)">每日 02:00</strong></div><div>认证方式：SSH Key + PGP</div><div>最后同步：<span class="mono">今日 02:00</span></div><div>累计接收：87 条</div></div></div>
+          <div class="card"><div class="card-head"><span class="card-title">某支付科技（合作机构）</span><span class="badge b-green">已对接</span></div><div style="font-size:12.5px;line-height:1.8;color:var(--text2)"><div>接口：<span class="mono">HTTPS Webhook 实时推送</span></div><div>同步频率：<strong style="color:var(--text)">实时</strong></div><div>认证方式：HMAC-SHA256</div><div>最后同步：<span class="mono">7 分钟前</span></div><div>累计接收：43 条</div></div></div>
+          <div class="card"><div class="card-head"><span class="card-title">某银联商务（合作机构）</span><span class="badge b-amber">待对接</span></div><div style="font-size:12.5px;line-height:1.8;color:var(--text2)"><div>接口：<span class="mono">—</span></div><div>状态：<strong style="color:var(--amber-text)">技术对接中</strong></div><div>预计完成：<span class="mono">2024-06-15</span></div><div>对接联系人：陈技术</div><div style="margin-top:10px"><button class="btn btn-ghost btn-sm" onclick="toast('已发送对接需求邮件','success')"><i class="ti ti-mail"></i>发起对接</button></div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 风险监测看板（系统自动监测） -->
+    <div class="view" id="view-risk-monitor">
+      <div class="page-header"><span class="page-title">风险监测看板</span><div class="page-actions"><span style="font-size:11.5px;color:var(--text3)"><i class="ti ti-radar" style="vertical-align:-2px"></i> 系统自动监测 · 实时更新</span></div></div>
+      <div class="compliance-banner"><i class="ti ti-radar"></i>本看板根据《收单外包服务评价管理规范》主要风险类型设计，<strong>由系统对接业务数据自动监测</strong>。指标异常时自动告警，告警记录留痕，用于内部合规自检与协会评价。</div>
+
+      <div class="metrics">
+        <div class="metric-card" onclick="switchView('risk-merchants')"><div class="metric-label"><i class="ti ti-target"></i>商户风险监测</div><div class="metric-val" style="color:var(--green);font-size:15px">运行正常</div><div class="metric-trend" style="color:var(--text2);font-size:11px">5 项指标实时监测中</div></div>
+        <div class="metric-card"><div class="metric-label"><i class="ti ti-shield-half"></i>交易合规监测</div><div class="metric-val" style="color:var(--green);font-size:15px">运行正常</div><div class="metric-trend" style="color:var(--text2);font-size:11px">8 项指标实时监测中</div></div>
+        <div class="metric-card"><div class="metric-label"><i class="ti ti-lock-square"></i>数据安全监测</div><div class="metric-val" style="color:var(--green);font-size:15px">运行正常</div><div class="metric-trend" style="color:var(--text2);font-size:11px">6 项指标实时监测中</div></div>
+        <div class="metric-card"><div class="metric-label"><i class="ti ti-alert-octagon"></i>本月触发告警</div><div class="metric-val warn">4</div><div class="metric-trend warn"><i class="ti ti-arrow-up-right"></i>3 已处理</div></div>
+      </div>
+
+      <div class="card" style="margin-bottom:16px">
+        <div class="card-head"><span class="card-title">监测指标清单（对照协会评价规范风险类型）</span></div>
+        <table>
+          <thead><tr>
+            <th style="width:90px">指标编号</th><th style="width:200px">监测项</th><th style="width:140px">对应风险类型</th>
+            <th style="width:80px">风险等级</th><th style="width:130px">当前状态</th><th style="width:140px">监测说明</th>
+            <th style="width:80px">最近触发</th><th style="width:90px">操作</th>
+          </tr></thead>
+          <tbody id="risk-monitor-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+
+
+  </div>
+</div>
+
+<!-- MODALS -->
+<div class="modal-overlay" id="modal-merchant-detail">
+  <div class="modal wide">
+    <div class="modal-header"><span class="modal-title" id="mdetail-title">商户详情</span><button class="modal-close" onclick="closeModal('modal-merchant-detail')"><i class="ti ti-x"></i></button></div>
+    <div class="modal-body">
+      <div class="tabs">
+        <div class="tab active" onclick="switchMdtTab(event,'mdt-info')">基础信息</div>
+        <div class="tab" onclick="switchMdtTab(event,'mdt-orders')">订单 (<span id="mdt-orders-count">0</span>)</div>
+        <div class="tab" onclick="switchMdtTab(event,'mdt-qr')">收款码 (<span id="mdt-qr-count">0</span>)</div>
+        <div class="tab" onclick="switchMdtTab(event,'mdt-risk')">风险记录</div>
+      </div>
+      <div class="tab-content active" id="mdt-info"></div>
+      <div class="tab-content" id="mdt-orders"></div>
+      <div class="tab-content" id="mdt-qr"></div>
+      <div class="tab-content" id="mdt-risk"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-merchant-detail')">关闭</button>
+      <button class="btn btn-danger" id="mdt-suspend-btn">暂停转接</button>
+      <button class="btn btn-primary" onclick="toast('商户信息已保存','success');closeModal('modal-merchant-detail')">保存</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-order-detail">
+  <div class="modal">
+    <div class="modal-header"><span class="modal-title">订单详情</span><button class="modal-close" onclick="closeModal('modal-order-detail')"><i class="ti ti-x"></i></button></div>
+    <div class="modal-body" id="order-detail-body"></div>
+    <div class="modal-footer"><button class="btn btn-ghost" onclick="closeModal('modal-order-detail')">关闭</button></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-audit-detail">
+  <div class="modal">
+    <div class="modal-header"><span class="modal-title" id="audit-modal-title">商户资料审核</span><button class="modal-close" onclick="closeModal('modal-audit-detail')"><i class="ti ti-x"></i></button></div>
+    <div class="modal-body" id="audit-modal-body"></div>
+    <div class="modal-footer">
+      <button class="btn btn-danger" id="audit-reject-btn">拒绝</button>
+      <button class="btn btn-ghost" onclick="closeModal('modal-audit-detail')">关闭</button>
+      <button class="btn btn-primary" id="audit-pass-btn">通过初审</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-partner-new">
+  <div class="modal">
+    <div class="modal-header"><span class="modal-title">新增合作收单机构</span><button class="modal-close" onclick="closeModal('modal-partner-new')"><i class="ti ti-x"></i></button></div>
+    <div class="modal-body">
+      <div class="form-row"><div class="form-group"><label>机构名称<span class="req">*</span></label><input type="text" id="np-name" placeholder="如：某银行股份有限公司"></div><div class="form-group"><label>机构类型<span class="req">*</span></label><select id="np-type"><option>持牌支付机构</option><option>银行</option><option>银联商务</option><option>其他</option></select></div></div>
+      <div class="form-row"><div class="form-group"><label>合作协议编号<span class="req">*</span></label><input type="text" id="np-agreement" placeholder="AGR-2024-XXX"></div><div class="form-group"><label>合作开始时间<span class="req">*</span></label><input type="text" id="np-started" placeholder="YYYY-MM-DD"></div></div>
+      <div class="form-row"><div class="form-group"><label>技术联系人</label><input type="text" id="np-tech"></div><div class="form-group"><label>合规联系人</label><input type="text" id="np-comp"></div></div>
+      <div class="form-group" style="margin-bottom:14px"><label>资金流说明</label><textarea placeholder="说明：资金流由该合作机构完成，本平台不介入"></textarea></div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" onclick="closeModal('modal-partner-new')">取消</button><button class="btn btn-primary" onclick="addPartner()">保存</button></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-license-detail">
+  <div class="modal">
+    <div class="modal-header"><span class="modal-title">备案详情</span><button class="modal-close" onclick="closeModal('modal-license-detail')"><i class="ti ti-x"></i></button></div>
+    <div class="modal-body">
+      <div class="detail-row"><span class="detail-label">备案主体</span><span class="detail-val">某科技有限公司</span></div>
+      <div class="detail-row"><span class="detail-label">备案编号</span><span class="detail-val mono">SWBJ-2024-XXXX</span></div>
+      <div class="detail-row"><span class="detail-label">备案类型</span><span class="detail-val">聚合支付技术服务</span></div>
+      <div class="detail-row"><span class="detail-label">备案机构</span><span class="detail-val">中国支付清算协会</span></div>
+      <div class="detail-row"><span class="detail-label">备案状态</span><span class="detail-val"><span class="badge b-green">已备案</span></span></div>
+      <div class="detail-row"><span class="detail-label">公示截图</span><span class="detail-val"><button class="btn btn-ghost btn-sm" onclick="toast('已下载公示截图','info')"><i class="ti ti-download"></i>下载附件</button></span></div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" onclick="closeModal('modal-license-detail')">关闭</button><button class="btn btn-primary" onclick="closeModal('modal-license-detail');toast('备案信息已更新','success')">更新信息</button></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-channel-detail">
+  <div class="modal">
+    <div class="modal-header"><span class="modal-title" id="ch-modal-title">通道配置详情</span><button class="modal-close" onclick="closeModal('modal-channel-detail')"><i class="ti ti-x"></i></button></div>
+    <div class="modal-body" id="ch-modal-body"></div>
+    <div class="modal-footer"><button class="btn btn-ghost" onclick="closeModal('modal-channel-detail')">关闭</button><button class="btn btn-primary" onclick="closeModal('modal-channel-detail');toast('通道配置已保存','success')">保存</button></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-key-detail">
+  <div class="modal">
+    <div class="modal-header"><span class="modal-title">接口密钥详情</span><button class="modal-close" onclick="closeModal('modal-key-detail')"><i class="ti ti-x"></i></button></div>
+    <div class="modal-body" id="key-modal-body"></div>
+    <div class="modal-footer"><button class="btn btn-ghost" onclick="closeModal('modal-key-detail')">关闭</button><button class="btn btn-primary" onclick="closeModal('modal-key-detail');toast('密钥轮换申请已提交','success')">申请轮换</button></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-patrol-new">
+  <div class="modal">
+    <div class="modal-header"><span class="modal-title">新增巡检记录</span><button class="modal-close" onclick="closeModal('modal-patrol-new')"><i class="ti ti-x"></i></button></div>
+    <div class="modal-body">
+      <div class="form-row"><div class="form-group"><label>收款码编号<span class="req">*</span></label><input type="text"></div><div class="form-group"><label>巡检人员<span class="req">*</span></label><input type="text"></div></div>
+      <div class="form-row"><div class="form-group"><label>是否异常</label><select><option>否</option><option>是</option></select></div><div class="form-group"><label>异常类型</label><select><option>无</option><option>码牌遗失</option><option>码牌破损</option><option>疑似被替换</option><option>门店不一致</option></select></div></div>
+      <div class="form-group" style="margin-bottom:14px"><label>处理结果</label><textarea placeholder="描述处理情况…"></textarea></div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" onclick="closeModal('modal-patrol-new')">取消</button><button class="btn btn-primary" onclick="closeModal('modal-patrol-new');toast('巡检记录已保存','success')">保存</button></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-qr-new">
+  <div class="modal">
+    <div class="modal-header"><span class="modal-title">新增收款码</span><button class="modal-close" onclick="closeModal('modal-qr-new')"><i class="ti ti-x"></i></button></div>
+    <div class="modal-body">
+      <div class="form-row"><div class="form-group"><label>所属商户<span class="req">*</span></label><select id="nqr-merchant"></select></div><div class="form-group"><label>所属门店<span class="req">*</span></label><input type="text" id="nqr-store" placeholder="如：朝阳路门店"></div></div>
+      <div class="form-row"><div class="form-group"><label>合作收单机构<span class="req">*</span></label><select id="nqr-partner"></select></div><div class="form-group"><label>码类型<span class="req">*</span></label><select id="nqr-type"><option>静态码</option><option>动态码</option></select></div></div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" onclick="closeModal('modal-qr-new')">取消</button><button class="btn btn-primary" onclick="addQR()">生成收款码</button></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-rule-new">
+  <div class="modal">
+    <div class="modal-header"><span class="modal-title">新增风控规则</span><button class="modal-close" onclick="closeModal('modal-rule-new')"><i class="ti ti-x"></i></button></div>
+    <div class="modal-body">
+      <div class="form-row"><div class="form-group"><label>规则名称<span class="req">*</span></label><input type="text" id="nr-name"></div><div class="form-group"><label>规则类型<span class="req">*</span></label><select id="nr-type"><option>频率控制</option><option>金额控制</option><option>地理控制</option><option>黑名单</option></select></div></div>
+      <div class="form-row"><div class="form-group"><label>触发条件<span class="req">*</span></label><input type="text" id="nr-cond" placeholder="如：60秒内 > 50次"></div><div class="form-group"><label>处置动作<span class="req">*</span></label><select id="nr-action"><option>拦截</option><option>人工审核</option><option>预警通知</option></select></div></div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" onclick="closeModal('modal-rule-new')">取消</button><button class="btn btn-primary" onclick="addRule()">创建</button></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-industry-new">
+  <div class="modal">
+    <div class="modal-header"><span class="modal-title">新增行业限制</span><button class="modal-close" onclick="closeModal('modal-industry-new')"><i class="ti ti-x"></i></button></div>
+    <div class="modal-body">
+      <div class="form-row"><div class="form-group"><label>行业名称<span class="req">*</span></label><input type="text" id="ni-name"></div><div class="form-group"><label>MCC码</label><input type="text" id="ni-mcc"></div></div>
+      <div class="form-row"><div class="form-group"><label>风险等级<span class="req">*</span></label><select id="ni-risk"><option>低</option><option>中</option><option>高</option></select></div><div class="form-group"><label>是否允许入网</label><select id="ni-allow"><option>允许</option><option>加强审核</option><option>禁止</option></select></div></div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" onclick="closeModal('modal-industry-new')">取消</button><button class="btn btn-primary" onclick="addIndustry()">保存</button></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-blacklist-add">
+  <div class="modal">
+    <div class="modal-header"><span class="modal-title">添加黑名单</span><button class="modal-close" onclick="closeModal('modal-blacklist-add')"><i class="ti ti-x"></i></button></div>
+    <div class="modal-body">
+      <div class="form-row"><div class="form-group"><label>类型<span class="req">*</span></label><select id="bl-type"><option>IP地址</option><option>设备指纹</option><option>身份证号（脱敏）</option></select></div><div class="form-group"><label>标识值<span class="req">*</span></label><input type="text" id="bl-value"></div></div>
+      <div class="form-group" style="margin-bottom:14px"><label>加入原因</label><textarea id="bl-reason" placeholder="说明加入黑名单的原因…"></textarea></div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" onclick="closeModal('modal-blacklist-add')">取消</button><button class="btn btn-primary" onclick="addBlacklist()">添加</button></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-confirm">
+  <div class="modal" style="width:420px">
+    <div class="modal-header"><span class="modal-title" id="confirm-title">确认操作</span><button class="modal-close" onclick="closeModal('modal-confirm')"><i class="ti ti-x"></i></button></div>
+    <div class="modal-body"><div id="confirm-body" style="font-size:13px;line-height:1.7"></div></div>
+    <div class="modal-footer"><button class="btn btn-ghost" onclick="closeModal('modal-confirm')">取消</button><button class="btn btn-primary" id="confirm-ok-btn">确认</button></div>
+  </div>
+</div>
+
+
+<!-- ═════════════ V4 新增模态框 ═════════════ -->
+<div class="modal-overlay" id="modal-field-new">
+  <div class="modal">
+    <div class="modal-header"><span class="modal-title">新增字段分级</span><button class="modal-close" onclick="closeModal('modal-field-new')"><i class="ti ti-x"></i></button></div>
+    <div class="modal-body">
+      <div class="form-row"><div class="form-group"><label>字段名称<span class="req">*</span></label><input type="text" id="nf-name" placeholder="如：身份证号"></div><div class="form-group"><label>数据分级<span class="req">*</span></label><select id="nf-class"><option>C3</option><option>C2</option><option>C1</option></select></div></div>
+      <div class="form-row"><div class="form-group"><label>所属业务</label><input type="text" id="nf-biz" placeholder="如：商户入网"></div><div class="form-group"><label>展示策略</label><select id="nf-display"><option>完全隐藏</option><option>默认脱敏</option><option>明文展示</option></select></div></div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" onclick="closeModal('modal-field-new')">取消</button><button class="btn btn-primary" onclick="addField()">保存</button></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-mask-new">
+  <div class="modal">
+    <div class="modal-header"><span class="modal-title">新增脱敏规则</span><button class="modal-close" onclick="closeModal('modal-mask-new')"><i class="ti ti-x"></i></button></div>
+    <div class="modal-body">
+      <div class="form-row"><div class="form-group"><label>字段名称<span class="req">*</span></label><input type="text" id="nm-field"></div><div class="form-group"><label>分级</label><select id="nm-class"><option>C3</option><option>C2</option><option>C1</option></select></div></div>
+      <div class="form-row"><div class="form-group"><label>适用角色<span class="req">*</span></label><select id="nm-role"><option>所有角色</option><option>运营</option><option>客服</option><option>审计</option><option>财务</option></select></div><div class="form-group"><label>脱敏策略<span class="req">*</span></label><select id="nm-strategy"><option>前N后N（中间星号）</option><option>仅显示末4位</option><option>完全隐藏</option><option>分段保留</option></select></div></div>
+      <div class="form-group" style="margin-bottom:14px"><label>需要审批才能明文查看</label><select id="nm-approve"><option>是</option><option>否</option></select></div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" onclick="closeModal('modal-mask-new')">取消</button><button class="btn btn-primary" onclick="addMaskRule()">保存</button></div>
+  </div>
+</div>
+
+<script>
+// ═════════════ DATA STORE ═════════════
+const STATE = {
+  merchants: [
+    {no:'M20240301000012',name:'云享科技有限公司',industry:'软件服务',mcc:'7372',partner:'某银行股份有限公司',status:'正常',risk:'低',amount:'¥38,240',orders:412,joined:'2024-03-01',reason:'',limit1:5000,limit2:50000,refund:'1.2%'},
+    {no:'M20240215000007',name:'美链商城',industry:'零售',mcc:'5411',partner:'某支付科技有限公司',status:'正常',risk:'低',amount:'¥26,180',orders:304,joined:'2024-02-15',reason:'',limit1:5000,limit2:50000,refund:'2.1%'},
+    {no:'M20240108000003',name:'鑫达餐饮集团',industry:'餐饮',mcc:'5812',partner:'某银行股份有限公司',status:'正常',risk:'中',amount:'¥18,920',orders:891,joined:'2024-01-08',reason:'高频订单，退款率偏高',limit1:1000,limit2:10000,refund:'8.2%'},
+    {no:'M20240416000018',name:'速递快运有限公司',industry:'物流',mcc:'4215',partner:'某银联商务股份有限公司',status:'已暂停',risk:'高',amount:'¥0',orders:0,joined:'2024-04-16',reason:'回调异常连续失败，检测到异地IP交易',limit1:500,limit2:2000,refund:'12.3%'},
+    {no:'M20240501000022',name:'小辣椒便利店',industry:'零售',mcc:'5411',partner:'某银行股份有限公司',status:'审核中',risk:'低',amount:'¥0',orders:0,joined:'2024-05-01',reason:'',limit1:2000,limit2:20000,refund:'-'},
+  ],
+  orders: [
+    {no:'PAY20240520143201001',merchantNo:'M20240301000012',merchant:'云享科技',mno:'TEST001',third:'WX4000000010',amount:'¥1,280.00',type:'微信 Native',ch:'WECHAT',status:'SUCCESS',time:'2024-05-20 14:32:01'},
+    {no:'PAY20240520143015002',merchantNo:'M20240215000007',merchant:'美链商城',mno:'M202405201430',third:'ALI2024052015',amount:'¥88.00',type:'支付宝 H5',ch:'ALIPAY',status:'PAYING',time:'2024-05-20 14:30:15'},
+    {no:'PAY20240520142844003',merchantNo:'M20240108000003',merchant:'鑫达餐饮',mno:'FD20240520284',third:'WX4000000003',amount:'¥45.50',type:'微信 JSAPI',ch:'WECHAT',status:'SUCCESS',time:'2024-05-20 14:28:44'},
+    {no:'PAY20240520142600004',merchantNo:'M20240301000012',merchant:'云享科技',mno:'TEST002',third:'ALI2024052026',amount:'¥3,200.00',type:'支付宝 PC',ch:'ALIPAY',status:'SUCCESS',time:'2024-05-20 14:26:00'},
+    {no:'PAY20240520142312005',merchantNo:'M20240416000018',merchant:'速递快运',mno:'SD20240520231',third:'UPP20240520231',amount:'¥12.00',type:'银联',ch:'UNIONPAY',status:'FAILED',time:'2024-05-20 14:23:12'},
+    {no:'PAY20240520142100006',merchantNo:'M20240215000007',merchant:'美链商城',mno:'M202405201421',third:'WX4000000006',amount:'¥560.00',type:'微信 Native',ch:'WECHAT',status:'SUCCESS',time:'2024-05-20 14:21:00'},
+    {no:'PAY20240520141845007',merchantNo:'M20240108000003',merchant:'鑫达餐饮',mno:'FD20240520184',third:'WX4000000007',amount:'¥32.00',type:'微信 JSAPI',ch:'WECHAT',status:'PAYING',time:'2024-05-20 14:18:45'},
+    {no:'PAY20240520141000010',merchantNo:'M20240215000007',merchant:'美链商城',mno:'M202405201410',third:'ALI2024052010',amount:'¥4,500.00',type:'支付宝 PC',ch:'ALIPAY',status:'RISK_HOLD',time:'2024-05-20 14:10:00'},
+  ],
+  partners: [
+    {no:'ORG001',name:'某银行股份有限公司',type:'银行',status:'合作中',agreement:'AGR-2024-001',channels:'微信/支付宝',biz:'聚合收款',tech:'王技术',compliance:'赵合规',started:'2024-01-01'},
+    {no:'ORG002',name:'某支付科技有限公司',type:'持牌支付机构',status:'合作中',agreement:'AGR-2024-002',channels:'支付宝/网银',biz:'聚合收款',tech:'李技术',compliance:'刘合规',started:'2024-02-15'},
+    {no:'ORG003',name:'某银联商务股份有限公司',type:'银联',status:'合作中',agreement:'AGR-2024-003',channels:'银联云闪付',biz:'聚合收款',tech:'陈技术',compliance:'周合规',started:'2024-03-01'},
+  ],
+  qrs: [
+    {no:'QR20240115001',merchantNo:'M20240108000003',merchant:'鑫达餐饮集团',store:'朝阳路门店',partner:'某银行',type:'静态码',status:'正常',created:'2024-01-15',last:'2024-05-20 14:28',tradeCity:'北京市朝阳',regCity:'北京市朝阳区'},
+    {no:'QR20240220005',merchantNo:'M20240215000007',merchant:'美链商城',store:'西城区门店',partner:'某支付机构',type:'静态码',status:'已冻结',created:'2024-02-20',last:'2024-05-19 14:30',tradeCity:'上海市浦东',regCity:'北京市西城区'},
+    {no:'QR20231201010',merchantNo:'M20240301000012',merchant:'云享科技',store:'总部门店',partner:'某银行',type:'动态码',status:'正常',created:'2023-12-01',last:'2024-05-20 14:16',tradeCity:'北京市海淀',regCity:'北京市海淀区'},
+  ],
+  patrols: [
+    {no:'PI20240520001',qr:'QR20240115001',merchant:'鑫达餐饮集团',store:'朝阳路门店',inspector:'李巡检员',time:'2024-05-20 10:00',abnormal:false,reason:'',result:'已归档'},
+    {no:'PI20240519003',qr:'QR20240220005',merchant:'美链商城',store:'西城区门店',inspector:'王巡检员',time:'2024-05-19 14:30',abnormal:true,reason:'疑似被替换',result:'处理中'},
+    {no:'PI20240518007',qr:'QR20231201010',merchant:'云享科技',store:'总部门店',inspector:'赵巡检员',time:'2024-05-18 09:15',abnormal:true,reason:'码牌破损',result:'已更换'},
+  ],
+  auditApps: [
+    {no:'APP20240520001',name:'星辰网络科技有限公司',industry:'互联网信息服务',time:'2024-05-20 10:15',status:'待初审',partner:'某银行',credit:'91110108XXXXXXXX1Y'},
+    {no:'APP20240520002',name:'盛达餐饮管理有限公司',industry:'餐饮服务',time:'2024-05-20 09:02',status:'待初审',partner:'某支付机构',credit:'91310115XXXXXXXX3K'},
+    {no:'APP20240519010',name:'云享科技有限公司',industry:'软件服务',time:'2024-05-19 16:30',status:'已通过',partner:'某银行',credit:'91110108XXXXXXXX0M'},
+  ],
+  refunds: [
+    {no:'REF20240520001',orderNo:'PAY20240520141000010',merchant:'美链商城',amount:'¥4,500.00',reason:'商品退货',status:'退款中',applied:'2024-05-20 14:10',done:'-'},
+  ],
+  callbacks: [
+    {orderNo:'PAY20240520143201001',merchant:'云享科技',url:'https://yxkj.com/pay/cb',code:200,retry:1,status:'成功',time:'2024-05-20 14:32:05'},
+    {orderNo:'PAY20240520143015002',merchant:'美链商城',url:'https://mlsc.com/notify',code:200,retry:1,status:'成功',time:'2024-05-20 14:30:20'},
+    {orderNo:'PAY20240520142312005',merchant:'速递快运',url:'https://sd.com/notify',code:500,retry:8,status:'失败',time:'2024-05-20 15:30:00'},
+  ],
+  diffs: [
+    {orderNo:'PAY20240519880011',merchant:'美链商城',amount1:'¥88.00',amount2:'—',diff:'¥88.00',diffType:'机构无此单',partner:'某支付机构',status:'待处理'},
+    {orderNo:'PAY20240519560022',merchant:'美链商城',amount1:'¥56.00',amount2:'¥56.50',diff:'¥0.50',diffType:'金额不一致',partner:'某支付机构',status:'待处理'},
+  ],
+  riskRules: [
+    {no:'FREQ_001',name:'单商户高频下单',type:'频率控制',cond:'60秒内 > 50次',action:'拦截',status:'启用',today:47},
+    {no:'AMT_002',name:'大额交易预警',type:'金额控制',cond:'单笔 > 日均3倍',action:'人工审核',status:'启用',today:12},
+    {no:'IP_003',name:'异地IP检测',type:'地理控制',cond:'IP归属地 ≠ 注册省份',action:'人工审核',status:'启用',today:5},
+    {no:'BL_004',name:'黑名单匹配',type:'黑名单',cond:'命中黑名单',action:'拦截',status:'启用',today:3},
+  ],
+  riskOrders: [
+    {orderNo:'PAY20240520142312005',merchantNo:'M20240416000018',merchant:'速递快运',amount:'¥12.00',rule:'IP_003',level:'中',action:'人工审核',status:'待审核',time:'2024-05-20 14:23'},
+    {orderNo:'PAY20240520141000010',merchantNo:'M20240215000007',merchant:'美链商城',amount:'¥4,500.00',rule:'AMT_002',level:'高',action:'风控挂起',status:'已挂起',time:'2024-05-20 14:10'},
+  ],
+  industries: [
+    {name:'普通零售',mcc:'5411-5499',risk:'低',allow:'允许',audit:'否',extra:'营业执照',limit1:'¥5,000',limit2:'¥50,000'},
+    {name:'餐饮服务',mcc:'5812',risk:'低',allow:'允许',audit:'否',extra:'营业执照',limit1:'¥2,000',limit2:'¥20,000'},
+    {name:'教育培训',mcc:'8200',risk:'中',allow:'加强审核',audit:'是',extra:'办学许可证+教育资质',limit1:'¥1,000',limit2:'¥10,000'},
+    {name:'医疗器械',mcc:'5047',risk:'中',allow:'加强审核',audit:'是',extra:'经营许可证+医疗资质',limit1:'¥2,000',limit2:'¥20,000'},
+    {name:'虚拟币交易',mcc:'6051',risk:'高',allow:'禁止',audit:'—',extra:'—',limit1:'—',limit2:'—'},
+    {name:'博彩相关',mcc:'7993',risk:'高',allow:'禁止',audit:'—',extra:'—',limit1:'—',limit2:'—'},
+    {name:'非法金融活动',mcc:'—',risk:'高',allow:'禁止',audit:'—',extra:'—',limit1:'—',limit2:'—'},
+    {name:'成人服务',mcc:'7273',risk:'高',allow:'禁止',audit:'—',extra:'—',limit1:'—',limit2:'—'},
+  ],
+  blacklist: [
+    {type:'设备指纹',value:'DFP_3a4b5c6d7e8f...',merchant:'—',reason:'批量刷单',source:'系统自动',time:'2024-05-19'},
+    {type:'IP地址',value:'103.24.56.78',merchant:'—',reason:'异地高频',source:'人工添加',time:'2024-05-18'},
+  ],
+  channels: [
+    {code:'WECHAT',name:'微信支付',partner:'某银行股份有限公司',version:'V3 API',status:'正常',rate:'98.2%',rt:'312ms',weight:100,icon:'ti-brand-wechat',color:'blue'},
+    {code:'ALIPAY',name:'支付宝',partner:'某支付科技有限公司',version:'OpenAPI v2.0',status:'正常',rate:'96.8%',rt:'428ms',weight:100,icon:'ti-credit-card',color:'green'},
+    {code:'UNIONPAY',name:'银联云闪付',partner:'某银联商务股份有限公司',version:'Online v5.1',status:'降级',rate:'91.4%',rt:'1,240ms',weight:80,icon:'ti-credit-card',color:'amber'},
+  ],
+  developers: [
+    {mno:'M20240301000012',name:'云享科技',appid:'app_yxkj_20240301',status:'启用',callback:'https://yxkj.com/cb',ip:'121.xx.xx.xx',sign:'RSA-2048',pubkey:'有效',last:'2024-05-20 14:32'},
+    {mno:'M20240215000007',name:'美链商城',appid:'app_mlsc_20240215',status:'启用',callback:'https://mlsc.com/notify',ip:'*',sign:'HMAC-SHA256',pubkey:'即将到期',last:'2024-05-20 14:30'},
+    {mno:'M20240108000003',name:'鑫达餐饮',appid:'app_xdcy_20240108',status:'启用',callback:'https://xdcy.com/pay',ip:'192.168.xx.xx',sign:'HMAC-SHA256',pubkey:'有效',last:'2024-05-20 14:18'},
+  ],
+  apikeys: [
+    {mno:'M20240301000012',name:'云享科技',appid:'app_yxkj_20240301',key:'sk_live_••••••••••••••••1234',sign:'RSA-2048',pubkey:'有效',created:'2024-03-01'},
+    {mno:'M20240215000007',name:'美链商城',appid:'app_mlsc_20240215',key:'sk_live_••••••••••••••••5678',sign:'HMAC-SHA256',pubkey:'即将到期',created:'2024-02-15'},
+  ],
+  flowLogs: [
+    {no:'PAY20240520142312005',mno:'SD20240520231',third:'UPP20240520231',from:'PAYING',to:'FAILED',trigger:'通道回调',result:'失败',operator:'系统',time:'2024-05-20 14:23:30'},
+    {no:'PAY20240520143201001',mno:'TEST001',third:'WX4000000010',from:'PAYING',to:'SUCCESS',trigger:'通道回调',result:'成功',operator:'系统',time:'2024-05-20 14:32:05'},
+    {no:'PAY20240520141000010',mno:'M202405201410',third:'ALI2024052010',from:'SUCCESS',to:'RISK_HOLD',trigger:'风控拦截',result:'挂起',operator:'风控引擎',time:'2024-05-20 14:10:20'},
+  ],
+  opLogs: [
+    {user:'admin',module:'商户管理',op:'审核通过商户入网申请',target:'APP20240519010',ip:'10.0.1.100',result:'成功',time:'2024-05-19 16:35'},
+    {user:'admin',module:'风控管理',op:'暂停商户交易信息转接',target:'M20240416000018',ip:'10.0.1.100',result:'成功',time:'2024-05-20 11:20'},
+    {user:'operator_02',module:'收款码管理',op:'冻结收款码（防调包）',target:'QR20240220005',ip:'10.0.1.108',result:'成功',time:'2024-05-19 15:10'},
+  ],
+  alerts: [
+    {no:'ALT20240520001',type:'登录失败过多',level:'高',user:'operator_01',ip:'221.180.75.xxx',time:'2024-05-20 08:45',status:'待处理',handler:''},
+    {no:'ALT20240520002',type:'批量导出',level:'中',user:'audit_02',ip:'10.0.1.109',time:'2024-05-20 10:15',status:'已处理',handler:'admin'},
+    {no:'ALT20240519005',type:'异地登录',level:'高',user:'operator_03',ip:'103.24.56.78',time:'2024-05-19 23:12',status:'待处理',handler:''},
+  ],
+  // ═════════════ V4 新增数据 ═════════════
+  fields: [
+    {name:'银行卡号',cls:'C3',biz:'交易转接',store:'禁止存储',transmit:'TLS+加密',display:'完全隐藏',ac:'禁止访问',mask:'-'},
+    {name:'银行卡CVN/CVN2',cls:'C3',biz:'交易转接',store:'禁止存储',transmit:'TLS+加密',display:'完全隐藏',ac:'禁止访问',mask:'-'},
+    {name:'支付密码',cls:'C3',biz:'交易转接',store:'禁止存储',transmit:'TLS+加密',display:'完全隐藏',ac:'禁止访问',mask:'-'},
+    {name:'商户法人身份证号',cls:'C2',biz:'商户管理',store:'AES-256-GCM',transmit:'HTTPS+加密',display:'默认脱敏',ac:'审批后查看',mask:'前6后4'},
+    {name:'商户法人姓名',cls:'C2',biz:'商户管理',store:'AES-256-GCM',transmit:'HTTPS+加密',display:'默认脱敏',ac:'审批后查看',mask:'仅显示姓'},
+    {name:'商户结算账号',cls:'C2',biz:'商户管理',store:'不存储（合作机构持有）',transmit:'HTTPS+加密',display:'默认脱敏',ac:'审批后查看',mask:'仅末4位'},
+    {name:'商户预留手机号',cls:'C2',biz:'商户管理',store:'AES-256-GCM',transmit:'HTTPS+加密',display:'默认脱敏',ac:'审批后查看',mask:'前3后4'},
+    {name:'商户营业执照号',cls:'C1',biz:'商户管理',store:'明文',transmit:'HTTPS',display:'明文展示',ac:'授权角色访问',mask:'-'},
+    {name:'商户名称',cls:'C1',biz:'商户管理',store:'明文',transmit:'HTTPS',display:'明文展示',ac:'授权角色访问',mask:'-'},
+    {name:'交易订单号',cls:'C1',biz:'交易转接',store:'明文',transmit:'HTTPS',display:'明文展示',ac:'授权角色访问',mask:'-'},
+  ],
+  lifecycle: [
+    {no:'LC20240520001',stage:'收集',cls:'C2',field:'商户法人身份证号',merchant:'M20240501000022',user:'admin',source:'商户入网',time:'2024-05-20 11:32:15',result:'成功'},
+    {no:'LC20240520002',stage:'存储',cls:'C2',field:'商户法人身份证号',merchant:'M20240501000022',user:'系统',source:'入库流程',time:'2024-05-20 11:32:16',result:'成功'},
+    {no:'LC20240520003',stage:'传输',cls:'C2',field:'商户结算账号',merchant:'M20240501000022',user:'系统',source:'推送收单机构',time:'2024-05-20 11:32:18',result:'成功'},
+    {no:'LC20240520004',stage:'使用',cls:'C2',field:'商户法人身份证号',merchant:'M20240301000012',user:'auditor_01',source:'年度审计查询',time:'2024-05-20 10:15:22',result:'成功'},
+    {no:'LC20240519001',stage:'删除',cls:'C2',field:'商户预留手机号',merchant:'M20240220000005',user:'admin',source:'客户注销',time:'2024-05-19 16:20:00',result:'成功'},
+    {no:'LC20240515001',stage:'销毁',cls:'C2',field:'商户证件影像',merchant:'M20231001000123',user:'admin',source:'保存期限届满',time:'2024-05-15 09:00:00',result:'成功'},
+    {no:'LC20240520005',stage:'使用',cls:'C3',field:'API Key（明文）',merchant:'M20240301000012',user:'admin',source:'审批后查看',time:'2024-05-20 14:30:00',result:'成功'},
+  ],
+  maskRules: [
+    {field:'商户法人身份证号',cls:'C2',role:'运营',strategy:'前6后4，中间星号',example:'410205********1234',approve:'是',status:'启用'},
+    {field:'商户法人身份证号',cls:'C2',role:'审计',strategy:'默认明文',example:'明文展示',approve:'否',status:'启用'},
+    {field:'商户结算账号',cls:'C2',role:'所有角色',strategy:'仅显示末4位',example:'****1234',approve:'是',status:'启用'},
+    {field:'商户预留手机号',cls:'C2',role:'所有角色',strategy:'前3后4',example:'138****5678',approve:'否',status:'启用'},
+    {field:'API Key',cls:'C3',role:'所有角色',strategy:'前N后N',example:'sk_live_••••1234',approve:'是',status:'启用'},
+    {field:'商户法人姓名',cls:'C2',role:'运营',strategy:'仅显示姓',example:'张●●',approve:'是',status:'启用'},
+  ],
+  destructions: [
+    {no:'DEL20240515001',type:'物理销毁',merchant:'某商户A',dataType:'商户证件影像',cls:'C2',amount:'1.2GB',applicant:'admin',reviewer:'auditor_01',status:'已销毁',time:'2024-05-15 09:00'},
+    {no:'DEL20240519001',type:'逻辑删除',merchant:'某商户B',dataType:'商户预留手机号',cls:'C2',amount:'1条',applicant:'admin',reviewer:'auditor_01',status:'已销毁',time:'2024-05-19 16:20'},
+    {no:'DEL20240520001',type:'物理销毁',merchant:'某商户C',dataType:'历史交易日志',cls:'C1',amount:'500MB',applicant:'admin',reviewer:'',status:'待审批',time:'-'},
+    {no:'DEL20240518001',type:'逻辑删除',merchant:'某商户D',dataType:'商户法人证件',cls:'C2',amount:'2.4MB',applicant:'admin',reviewer:'auditor_01',status:'已销毁',time:'2024-05-18 11:00'},
+  ],
+  keyOps: [
+    {no:'KEY20240515001',key:'DEK_V7',type:'数据加密密钥',op:'生成',user:'admin',time:'2024-05-15 02:00:00',approver:'auditor_01',result:'成功'},
+    {no:'KEY20240515002',key:'DEK_V6',type:'数据加密密钥',op:'撤销',user:'admin',time:'2024-05-15 02:30:00',approver:'auditor_01',result:'成功'},
+    {no:'KEY20240520001',key:'app_yxkj_20240301',type:'商户签名密钥',op:'查看',user:'admin',time:'2024-05-20 14:30:00',approver:'auditor_01',result:'成功'},
+    {no:'KEY20240518001',key:'MMK_V3',type:'主密钥',op:'轮换检查',user:'admin',time:'2024-05-18 09:00:00',approver:'-',result:'成功'},
+    {no:'KEY20240520002',key:'app_mlsc_20240215',type:'商户签名密钥',op:'轮换申请',user:'admin',time:'2024-05-20 15:00:00',approver:'auditor_01（待审批）',result:'待审批'},
+  ],
+  extBlIncoming: [
+    {source:'支付清算协会',type:'套现高风险',level:'高',value:'IMEI:867***...001',subject:'某商户（已剥离）',time:'2024-05-20 14:00',hit:'未命中',action:'查看'},
+    {source:'支付清算协会',type:'伪造商户信息',level:'高',value:'统一信用码 9131****0001',subject:'某科技公司',time:'2024-05-20 14:00',hit:'未命中',action:'查看'},
+    {source:'某银行',type:'与商户合谋欺诈',level:'高',value:'手机号 138****0001',subject:'某餐饮商户',time:'2024-05-20 02:00',hit:'未命中',action:'查看'},
+    {source:'某支付科技',type:'移机/异地交易',level:'中',value:'IP 103.24.56.78',subject:'未知主体',time:'2024-05-20 13:55',hit:'已命中',action:'已拦截'},
+    {source:'支付清算协会',type:'频繁变更合作机构',level:'中',value:'机构编号 OG****042',subject:'某外包机构',time:'2024-05-19 14:00',hit:'未命中',action:'查看'},
+  ],
+  extBlOutgoing: [
+    {no:'REP20240519001',type:'套现可疑',level:'中',subject:'M20240416000018 速递快运',target:'某银联商务 + 协会',user:'admin',time:'2024-05-19 18:00',status:'已接收'},
+    {no:'REP20240515001',type:'回调篡改可疑',level:'低',subject:'IP 103.24.56.78',target:'协会',user:'admin',time:'2024-05-15 14:00',status:'已接收'},
+  ],
+  riskMonitors: [
+    {no:'MON_M01',name:'商户准入合规率',type:'伪造商户信息',level:'高',status:'正常',desc:'商户资料完整性 & 真实性核验通过率',last:'-'},
+    {no:'MON_M02',name:'高风险行业商户占比',type:'违规经营',level:'高',status:'正常',desc:'禁止行业 / 加强审核行业商户数量监测',last:'-'},
+    {no:'MON_M03',name:'商户退款率异常',type:'与商户合谋欺诈',level:'中',status:'已触发',desc:'商户退款率 > 5% 自动标记',last:'2024-05-20'},
+    {no:'MON_M04',name:'商户结算路径变更',type:'擅自变更结算路径',level:'高',status:'正常',desc:'商户结算账号变更监测（应为禁止）',last:'-'},
+    {no:'MON_T01',name:'套现可疑交易',type:'套现/套码',level:'高',status:'正常',desc:'整数额、高频、夜间交易模式监测',last:'-'},
+    {no:'MON_T02',name:'异地交易监测',type:'移机',level:'中',status:'已触发',desc:'交易地与商户注册地不一致监测',last:'2024-05-20'},
+    {no:'MON_T03',name:'回调地址变更',type:'伪造商户信息',level:'高',status:'正常',desc:'商户回调地址频繁变更监测',last:'-'},
+    {no:'MON_T04',name:'交易金额异常',type:'洗钱可疑',level:'中',status:'正常',desc:'单笔/单日 > 历史均值 N 倍监测',last:'-'},
+    {no:'MON_D01',name:'敏感字段访问频次',type:'敏感信息泄露',level:'高',status:'正常',desc:'C2/C3 字段单日访问次数监测',last:'-'},
+    {no:'MON_D02',name:'数据导出异常',type:'敏感信息泄露',level:'高',status:'已触发',desc:'批量导出、夜间导出监测',last:'2024-05-20'},
+    {no:'MON_D03',name:'API 密钥重置频次',type:'账号异常',level:'中',status:'正常',desc:'商户密钥短期内多次重置监测',last:'-'},
+    {no:'MON_D04',name:'异常登录监测',type:'账号异常',level:'高',status:'已触发',desc:'异地登录、登录失败过多监测',last:'2024-05-20'},
+  ],
+};
+
+// ═════════════ MENU ═════════════
+const MENU = [
+  {label:'首页工作台',items:[{icon:'ti-layout-dashboard',label:'交易概览 & 工作台',view:'home'}]},
+  {label:'商户管理中心',items:[
+    {icon:'ti-list',label:'商户列表',view:'merchant-list'},
+    {icon:'ti-user-plus',label:'商户入网',view:'merchant-onboard'},
+    {icon:'ti-user-check',label:'商户资料审核',view:'merchant-audit',badgeKey:'audit'},
+    {icon:'ti-building-store',label:'门店管理',view:'store'},
+    {icon:'ti-files',label:'商户协议归档',view:'agreement-archive'},
+    {icon:'ti-shield-half',label:'商户风险评级',view:'merchant-risk'},
+  ]},
+  {label:'收款码管理中心',items:[
+    {icon:'ti-qrcode',label:'收款码列表',view:'qr-list'},
+    {icon:'ti-plus',label:'新增收款码',view:'qr-new'},
+    {icon:'ti-download',label:'码牌下载',view:'qr-download'},
+    {icon:'ti-toggle-right',label:'收款码状态管理',view:'qr-status'},
+    {icon:'ti-map-search',label:'码牌巡检记录',view:'qr-patrol'},
+    {icon:'ti-shield-x',label:'防调包记录',view:'qr-antitamper',badgeKey:'tamper'},
+  ]},
+  {label:'交易订单中心',items:[
+    {icon:'ti-receipt',label:'订单列表',view:'order-list'},
+    {icon:'ti-rotate-clockwise-2',label:'退款记录',view:'refund'},
+    {icon:'ti-webhook',label:'回调记录',view:'callback-log',badgeKey:'callback'},
+    {icon:'ti-alert-circle',label:'异常订单',view:'order-exception'},
+    {icon:'ti-git-branch',label:'订单状态流转',view:'order-flow'},
+  ]},
+  {label:'交易对账辅助中心',items:[
+    {icon:'ti-chart-bar',label:'交易汇总',view:'reconcile-summary'},
+    {icon:'ti-upload',label:'对账文件上传',view:'reconcile-upload'},
+    {icon:'ti-file-diff',label:'差异订单',view:'reconcile-diff',badgeKey:'diff'},
+    {icon:'ti-report',label:'对账报告导出',view:'reconcile-report'},
+    {icon:'ti-clipboard-list',label:'差异处理记录',view:'reconcile-diff-log'},
+  ]},
+  {label:'风控管理中心',items:[
+    {icon:'ti-settings-cog',label:'风控规则',view:'risk-rules'},
+    {icon:'ti-alert-triangle',label:'风险订单',view:'risk-orders',badgeKey:'riskOrder'},
+    {icon:'ti-user-x',label:'风险商户',view:'risk-merchants'},
+    {icon:'ti-ban',label:'黑名单管理',view:'blacklist'},
+    {icon:'ti-building-factory',label:'行业限制库',view:'industry-lib'},
+    {icon:'ti-clipboard-check',label:'风险处理记录',view:'risk-handle'},
+  ]},
+  {label:'接口管理中心',items:[
+    {icon:'ti-plug-connected',label:'通道配置',view:'channel-config'},
+    {icon:'ti-code',label:'商户开发者管理',view:'developer'},
+    {icon:'ti-key',label:'接口密钥',view:'api-keys'},
+    {icon:'ti-api',label:'API请求日志',view:'api-log'},
+    {icon:'ti-webhook',label:'回调通知日志',view:'callback-log'},
+    {icon:'ti-bug',label:'接口异常监控',view:'api-exception'},
+    {icon:'ti-test-pipe',label:'沙箱测试',view:'sandbox'},
+  ]},
+  {label:'合作机构管理中心',items:[
+    {icon:'ti-building-bank',label:'合作收单机构管理',view:'partner-list'},
+    {icon:'ti-certificate',label:'收单外包备案信息',view:'license'},
+    {icon:'ti-files',label:'合作协议归档',view:'partner-agreement'},
+    {icon:'ti-list-check',label:'外包服务范围',view:'scope'},
+    {icon:'ti-certificate-2',label:'资质文件管理',view:'partner-cert'},
+    {icon:'ti-clipboard-text',label:'合规检查清单',view:'compliance-check'},
+  ]},
+  {label:'数据安全中心',items:[
+    {icon:'ti-login',label:'登录日志',view:'login-log'},
+    {icon:'ti-activity',label:'操作日志',view:'op-log'},
+    {icon:'ti-download',label:'数据导出记录',view:'export-log'},
+    {icon:'ti-key',label:'权限变更记录',view:'permission-log'},
+    {icon:'ti-eye',label:'敏感信息访问记录',view:'sensitive-log'},
+    {icon:'ti-bell-exclamation',label:'安全告警记录',view:'security-alert',badgeKey:'alert'},
+  ]},
+  {label:'信息安全合规中心',items:[
+    {icon:'ti-shield-lock',label:'数据分级管理',view:'data-classification'},
+    {icon:'ti-recycle',label:'信息生命周期',view:'info-lifecycle'},
+    {icon:'ti-eye-off',label:'数据脱敏配置',view:'mask-config'},
+    {icon:'ti-trash',label:'删除 / 销毁记录',view:'data-destruction'},
+    {icon:'ti-key',label:'密钥全生命周期',view:'key-mgmt'},
+    {icon:'ti-share',label:'外部黑名单 / 风险共享',view:'external-blacklist',badgeKey:'extBl'},
+    {icon:'ti-radar',label:'风险监测看板',view:'risk-monitor',badgeKey:'monitor'},
+  ]},
+  {label:'系统设置',items:[
+    {icon:'ti-user-cog',label:'账号管理',view:'account-mgmt'},
+    {icon:'ti-shield',label:'角色权限',view:'role-perm'},
+    {icon:'ti-building',label:'企业信息',view:'settings'},
+    {icon:'ti-adjustments',label:'系统参数',view:'settings'},
+    {icon:'ti-git-branch',label:'审批流程配置',view:'approve-flow'},
+  ]},
+];
+
+function getBadgeCount(key){
+  switch(key){
+    case 'audit': return STATE.auditApps.filter(a=>a.status==='待初审').length;
+    case 'tamper': return STATE.qrs.filter(q=>q.tradeCity!==q.regCity).length;
+    case 'callback': return STATE.callbacks.filter(c=>c.status==='失败').length;
+    case 'diff': return STATE.diffs.filter(d=>d.status==='待处理').length;
+    case 'riskOrder': return STATE.riskOrders.filter(r=>r.status==='待审核'||r.status==='已挂起').length;
+    case 'alert': return STATE.alerts.filter(a=>a.status==='待处理').length;
+    case 'extBl': return STATE.extBlIncoming.filter(b=>b.hit==='已命中').length;
+    case 'monitor': return STATE.riskMonitors.filter(m=>m.status==='已触发').length;
+  }
+  return 0;
+}
+
+function buildNav(){
+  const nav = document.getElementById('sidebar-nav');
+  nav.innerHTML = MENU.map((g,gi)=>`
+    <div class="nav-group">
+      <div class="nav-group-header" onclick="toggleGroup(this)" data-gi="${gi}">
+        <span class="nav-group-label">${g.label}</span>
+        <i class="ti ti-chevron-down"></i>
+      </div>
+      <div class="nav-children" id="ng-${gi}" style="max-height:700px">
+        ${g.items.map(it=>{
+          const cnt = it.badgeKey ? getBadgeCount(it.badgeKey) : 0;
+          const badgeCls = it.badgeKey==='audit'||it.badgeKey==='diff' ? 'amber' : '';
+          return `<div class="nav-item" data-view="${it.view}" data-badge-key="${it.badgeKey||''}" onclick="switchView('${it.view}')">
+            <i class="ti ${it.icon}"></i>${it.label}
+            ${cnt>0?`<span class="nav-badge ${badgeCls}">${cnt}</span>`:''}
+          </div>`;
+        }).join('')}
+      </div>
+    </div>`).join('');
+}
+
+function refreshBadges(){
+  document.querySelectorAll('.nav-item[data-badge-key]').forEach(el=>{
+    const key = el.dataset.badgeKey;
+    if(!key) return;
+    const cnt = getBadgeCount(key);
+    const existing = el.querySelector('.nav-badge');
+    if(existing) existing.remove();
+    if(cnt>0){
+      const badgeCls = key==='audit'||key==='diff' ? 'amber' : '';
+      el.insertAdjacentHTML('beforeend', `<span class="nav-badge ${badgeCls}">${cnt}</span>`);
+    }
+  });
+}
+
+function toggleGroup(el){
+  const gi = el.dataset.gi;
+  const ch = document.getElementById('ng-'+gi);
+  const collapsed = el.classList.toggle('collapsed');
+  ch.style.maxHeight = collapsed ? '0' : '700px';
+}
+
+function switchView(view){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  const target = document.getElementById('view-'+view);
+  if(target) target.classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n=>{
+    n.classList.toggle('active', n.dataset.view===view);
+  });
+  const el = document.querySelector(`.nav-item[data-view="${view}"]`);
+  if(el){
+    const label = el.firstChild.nextSibling.textContent.trim();
+    document.getElementById('topbar-title').textContent = label;
+  }
+  document.querySelector('.content').scrollTop = 0;
+  // Re-render based on view
+  refreshView(view);
+}
+
+function refreshView(view){
+  switch(view){
+    case 'home': renderDashboard(); break;
+    case 'merchant-list': renderMerchants(); break;
+    case 'merchant-audit': renderAudit(); break;
+    case 'merchant-risk': renderMerchantRisk(); break;
+    case 'qr-list': renderQRs(); break;
+    case 'qr-patrol': renderPatrols(); break;
+    case 'qr-antitamper': renderAntitamper(); break;
+    case 'order-list': renderOrders(); break;
+    case 'order-flow': renderFlowLogs(); break;
+    case 'refund': renderRefunds(); break;
+    case 'callback-log': renderCallbacks(); break;
+    case 'reconcile-diff': renderDiffs(); break;
+    case 'risk-rules': renderRiskRules(); break;
+    case 'risk-orders': renderRiskOrders(); break;
+    case 'risk-merchants': renderRiskMerchants(); break;
+    case 'industry-lib': renderIndustry(); break;
+    case 'blacklist': renderBlacklist(); break;
+    case 'channel-config': renderChannels(); break;
+    case 'developer': renderDevelopers(); break;
+    case 'api-keys': renderAPIKeys(); break;
+    case 'partner-list': renderPartners(); break;
+    case 'op-log': renderOpLogs(); break;
+    case 'security-alert': renderAlerts(); break;
+    case 'sensitive-log': renderSensitive(); break;
+    case 'data-classification': renderFieldClassification(); break;
+    case 'info-lifecycle': renderLifecycle(); renderLifecycleLogs(); break;
+    case 'mask-config': renderMaskRules(); break;
+    case 'data-destruction': renderDestructions(); break;
+    case 'key-mgmt': renderKeyOps(); break;
+    case 'external-blacklist': renderExtBl(); break;
+    case 'risk-monitor': renderRiskMonitor(); break;
+  }
+}
+
+// ═════════════ TOAST ═════════════
+function toast(msg, type='success'){
+  const icons = {success:'ti-check',error:'ti-x',info:'ti-info-circle'};
+  const t = document.createElement('div');
+  t.className = `toast ${type}`;
+  t.innerHTML = `<i class="ti ${icons[type]||'ti-check'}" style="font-size:16px"></i><span>${msg}</span>`;
+  document.getElementById('toast-container').appendChild(t);
+  setTimeout(()=>{ t.style.opacity='0'; t.style.transform='translateX(20px)'; t.style.transition='all .25s'; setTimeout(()=>t.remove(), 250); }, 2800);
+}
+
+// ═════════════ MODAL ═════════════
+function openModal(id){ document.getElementById(id).classList.add('open'); }
+function closeModal(id){ document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.modal-overlay').forEach(m=>{
+  m.addEventListener('click', e=>{ if(e.target===m) m.classList.remove('open'); });
+});
+
+function confirmDialog(title, body, onOk){
+  document.getElementById('confirm-title').textContent = title;
+  document.getElementById('confirm-body').innerHTML = body;
+  const btn = document.getElementById('confirm-ok-btn');
+  btn.onclick = ()=>{ closeModal('modal-confirm'); onOk(); };
+  openModal('modal-confirm');
+}
+
+// ═════════════ HELPER ═════════════
+function riskBadge(r){
+  if(r==='低') return '<span class="badge b-green">低风险</span>';
+  if(r==='中') return '<span class="badge b-amber">中风险</span>';
+  if(r==='高') return '<span class="badge b-red">高风险</span>';
+  return r;
+}
+const STATUS_MAP = {
+  'SUCCESS':{label:'支付成功',cls:'b-green',color:'var(--green)'},
+  'PAYING':{label:'支付中',cls:'b-blue',color:'var(--accent)'},
+  'FAILED':{label:'支付失败',cls:'b-red',color:'var(--red)'},
+  'CLOSED':{label:'已关闭',cls:'b-gray',color:'var(--text3)'},
+  'RISK_HOLD':{label:'风控挂起',cls:'b-red',color:'var(--red)'},
+  'REFUNDING':{label:'退款中',cls:'b-amber',color:'var(--amber)'},
+  'REFUNDED':{label:'已退款',cls:'b-amber',color:'var(--amber)'},
+};
+function statusBadge(s){
+  const m = STATUS_MAP[s];
+  if(m) return `<span class="badge ${m.cls}"><span class="b-dot" style="background:${m.color}"></span>${m.label}</span>`;
+  const fallback = {
+    '正常':'b-green','已暂停':'b-red','审核中':'b-amber','已冻结':'b-red',
+    '启用':'b-green','停用':'b-gray','合作中':'b-green','已终止':'b-gray',
+    '允许':'b-green','加强审核':'b-amber','禁止':'b-red',
+    '有效':'b-green','即将到期':'b-amber','失效':'b-red',
+    '成功':'b-green','失败':'b-red','待处理':'b-amber','已处理':'b-green',
+    '待初审':'b-amber','已通过':'b-green','已拒绝':'b-red',
+    '退款中':'b-amber','已退款':'b-green',
+    '待审核':'b-amber','已挂起':'b-red',
+    '已归档':'b-green','处理中':'b-amber','已更换':'b-green',
+  };
+  return `<span class="badge ${fallback[s]||'b-gray'}">${s}</span>`;
+}
+function levelBadge(l){
+  if(l==='高') return '<span class="badge b-red">高</span>';
+  if(l==='中') return '<span class="badge b-amber">中</span>';
+  if(l==='低') return '<span class="badge b-green">低</span>';
+  return l;
+}
+
+
+// ═════════════ RENDERERS ═════════════
+function renderDashboard(){
+  document.getElementById('dash-compliance-todo').textContent = '2';
+  document.getElementById('dash-active-merchants').textContent = STATE.merchants.filter(m=>m.status==='正常').length + 235;
+
+  // 待办列表
+  const high = STATE.merchants.filter(m=>m.risk==='高').length;
+  const rOrder = STATE.riskOrders.filter(r=>r.status==='待审核'||r.status==='已挂起').length;
+  const cbFail = STATE.callbacks.filter(c=>c.status==='失败').length;
+  const diffs = STATE.diffs.filter(d=>d.status==='待处理').length;
+  const audits = STATE.auditApps.filter(a=>a.status==='待初审').length;
+
+  const items = [
+    {bg:'var(--red-bg)',color:'var(--red-text)',icon:'ti-user-x',label:'高风险商户',count:high,cls:'b-red',view:'risk-merchants'},
+    {bg:'var(--amber-bg)',color:'var(--amber-text)',icon:'ti-alert-triangle',label:'风险订单待处理',count:rOrder,cls:'b-amber',view:'risk-orders'},
+    {bg:'var(--gray-bg)',color:'var(--gray-text)',icon:'ti-webhook',label:'异常回调',count:cbFail,cls:'b-gray',view:'callback-log'},
+    {bg:'var(--gray-bg)',color:'var(--gray-text)',icon:'ti-file-diff',label:'差异订单待核对',count:diffs,cls:'b-gray',view:'reconcile-diff'},
+    {bg:'var(--blue-bg)',color:'var(--blue-text)',icon:'ti-user-check',label:'待审核商户',count:audits,cls:'b-blue',view:'merchant-audit'},
+  ];
+  document.getElementById('dash-todo-list').innerHTML = items.map(i=>`
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:9px 13px;background:${i.bg};border-radius:var(--radius);cursor:pointer;transition:opacity .1s" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'" onclick="switchView('${i.view}')">
+      <div style="display:flex;align-items:center;gap:9px"><i class="ti ${i.icon}" style="color:${i.color};font-size:15px"></i><span style="font-size:12.5px;font-weight:500;color:var(--text)">${i.label}</span></div>
+      <span class="badge ${i.cls}">${i.count}</span>
+    </div>`).join('');
+
+  // 通道状态
+  document.getElementById('dash-channels').innerHTML = STATE.channels.map(c=>{
+    const statusBadge = c.status==='正常'?'<span class="badge b-green">正常</span>':'<span class="badge b-amber">'+c.status+'</span>';
+    const color = c.color==='blue'?'var(--accent)':c.color==='green'?'var(--green)':'var(--amber)';
+    return `<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 13px;background:var(--surface2);border-radius:var(--radius);cursor:pointer" onclick="switchView('channel-config')">
+      <div style="display:flex;align-items:center;gap:9px;font-size:12.5px"><i class="ti ${c.icon}" style="color:${color};font-size:16px"></i><div><div style="font-weight:500;color:var(--text)">${c.name}</div><div style="font-size:10.5px;color:var(--text3)">${c.partner}</div></div></div>
+      <div style="display:flex;align-items:center;gap:10px;flex-shrink:0"><span style="font-size:11px;color:var(--text2);font-family:var(--mono)">${c.rate} · ${c.rt}</span>${statusBadge}</div>
+    </div>`;
+  }).join('');
+
+  // 最近活动
+  document.getElementById('dash-activity').innerHTML = STATE.opLogs.slice(0,5).map(l=>`
+    <div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #F1F5F9;font-size:12.5px">
+      <div style="width:28px;height:28px;border-radius:8px;background:var(--accent-bg);color:var(--accent);display:flex;align-items:center;justify-content:center"><i class="ti ti-activity" style="font-size:14px"></i></div>
+      <div style="flex:1;min-width:0"><div style="font-weight:500">${l.op}</div><div style="font-size:11px;color:var(--text3)">${l.user} · ${l.module} · ${l.target}</div></div>
+      <span class="mono" style="font-size:11px;color:var(--text3)">${l.time}</span>
+    </div>`).join('');
+}
+
+function renderMerchants(){
+  const search = (document.getElementById('merchant-search')?.value||'').toLowerCase();
+  const fs = document.getElementById('merchant-filter-status')?.value||'';
+  const fr = document.getElementById('merchant-filter-risk')?.value||'';
+  const data = STATE.merchants.filter(m=>{
+    if(search && !m.name.toLowerCase().includes(search) && !m.no.toLowerCase().includes(search)) return false;
+    if(fs && m.status!==fs) return false;
+    if(fr && m.risk!==fr) return false;
+    return true;
+  });
+  document.getElementById('merchant-tbody').innerHTML = data.map(m=>`
+    <tr onclick="openMerchantDetail('${m.no}')">
+      <td class="mono">${m.no}</td><td style="font-weight:500">${m.name}</td>
+      <td>${m.industry}</td><td class="mono">${m.mcc}</td>
+      <td style="color:var(--text2);font-size:11.5px">${m.partner}</td>
+      <td>${statusBadge(m.status)}</td>
+      <td>${riskBadge(m.risk)}</td>
+      <td style="color:var(--accent);font-weight:500">${m.amount}</td>
+      <td class="mono" style="font-size:11px">${m.joined}</td>
+      <td onclick="event.stopPropagation()" style="display:flex;gap:4px">
+        <button class="btn btn-ghost btn-sm" onclick="openMerchantDetail('${m.no}')">详情</button>
+        ${m.status==='正常'?`<button class="btn btn-danger btn-sm" onclick="suspendMerchant('${m.no}')">暂停</button>`:m.status==='已暂停'?`<button class="btn btn-success btn-sm" onclick="resumeMerchant('${m.no}')">恢复</button>`:''}
+      </td>
+    </tr>`).join('');
+  document.getElementById('merchant-count').textContent = `共 ${data.length} 条（模拟数据）`;
+}
+
+function renderAudit(){
+  document.getElementById('audit-tbody').innerHTML = STATE.auditApps.map(a=>`
+    <tr onclick="openAuditDetail('${a.no}')">
+      <td class="mono">${a.no}</td>
+      <td style="font-weight:500">${a.name}</td>
+      <td>${a.industry}</td>
+      <td class="mono" style="font-size:11.5px;color:var(--text2)">${a.time}</td>
+      <td>${statusBadge(a.status)}</td>
+      <td style="color:var(--text2)">${a.partner}</td>
+      <td onclick="event.stopPropagation()">
+        ${a.status==='待初审'?`<button class="btn btn-primary btn-sm" onclick="openAuditDetail('${a.no}')">审核</button>`:`<button class="btn btn-ghost btn-sm" onclick="openAuditDetail('${a.no}')">查看</button>`}
+      </td>
+    </tr>`).join('');
+  document.getElementById('audit-pending-badge').textContent = STATE.auditApps.filter(a=>a.status==='待初审').length + ' 待审核';
+}
+
+function renderMerchantRisk(){
+  document.getElementById('risk-low-count').textContent = STATE.merchants.filter(m=>m.risk==='低').length;
+  document.getElementById('risk-mid-count').textContent = STATE.merchants.filter(m=>m.risk==='中').length;
+  document.getElementById('risk-high-count').textContent = STATE.merchants.filter(m=>m.risk==='高').length;
+  document.getElementById('risk-paused-count').textContent = STATE.merchants.filter(m=>m.status==='已暂停').length;
+
+  document.getElementById('merchant-risk-tbody').innerHTML = STATE.merchants.map(m=>`
+    <tr onclick="openMerchantDetail('${m.no}')">
+      <td class="mono">${m.no}</td><td style="font-weight:500">${m.name}</td>
+      <td>${m.industry}</td><td class="mono">${m.mcc}</td>
+      <td style="color:var(--text2);font-size:11.5px">${m.partner}</td>
+      <td>${riskBadge(m.risk)}</td>
+      <td style="color:${parseFloat(m.refund)>5?'var(--red-text)':parseFloat(m.refund)>3?'var(--amber-text)':'var(--text)'}">${m.refund}</td>
+      <td>¥${m.limit1.toLocaleString()}</td>
+      <td>¥${m.limit2.toLocaleString()}</td>
+      <td onclick="event.stopPropagation()" style="display:flex;gap:4px">
+        <button class="btn btn-ghost btn-sm" onclick="openMerchantDetail('${m.no}')">查看</button>
+        <button class="btn btn-danger btn-sm" onclick="adjustRiskLevel('${m.no}')">调整</button>
+      </td>
+    </tr>`).join('');
+}
+
+function renderQRs(){
+  document.getElementById('qr-tbody').innerHTML = STATE.qrs.map(q=>`
+    <tr onclick="event.stopPropagation()">
+      <td class="mono">${q.no}</td>
+      <td style="font-weight:500"><a onclick="openMerchantDetail('${q.merchantNo}')" style="color:var(--accent);cursor:pointer;text-decoration:none">${q.merchant}</a></td>
+      <td>${q.store}</td>
+      <td style="color:var(--text2);font-size:11.5px">${q.partner}</td>
+      <td><span class="badge b-gray">${q.type}</span></td>
+      <td>${statusBadge(q.status)}</td>
+      <td class="mono" style="font-size:11px">${q.created}</td>
+      <td class="mono" style="font-size:11px">${q.last}</td>
+      <td style="display:flex;gap:4px">
+        <button class="btn btn-ghost btn-sm" onclick="toast('查看收款码详情','info')">详情</button>
+        ${q.status==='正常'?`<button class="btn btn-danger btn-sm" onclick="freezeQR('${q.no}')">冻结</button>`:`<button class="btn btn-success btn-sm" onclick="unfreezeQR('${q.no}')">解冻</button>`}
+      </td>
+    </tr>`).join('');
+}
+
+function renderPatrols(){
+  document.getElementById('patrol-tbody').innerHTML = STATE.patrols.map(p=>`
+    <tr>
+      <td class="mono">${p.no}</td><td class="mono">${p.qr}</td>
+      <td>${p.merchant}</td><td>${p.store}</td>
+      <td>${p.inspector}</td><td class="mono" style="font-size:11px;color:var(--text2)">${p.time}</td>
+      <td>${p.abnormal?'<span class="badge b-red">异常</span>':'<span class="badge b-green">正常</span>'}</td>
+      <td style="color:${p.abnormal?'var(--red-text)':'var(--text3)'};font-size:11.5px">${p.reason||'—'}</td>
+      <td>${statusBadge(p.result)}</td>
+      <td>${p.result==='处理中'?`<button class="btn btn-primary btn-sm" onclick="handlePatrol('${p.no}')">处理</button>`:`<button class="btn btn-ghost btn-sm" onclick="toast('查看巡检详情','info')">查看</button>`}</td>
+    </tr>`).join('');
+}
+
+function renderAntitamper(){
+  const data = STATE.qrs.filter(q=>q.tradeCity && q.regCity);
+  document.getElementById('antitamper-tbody').innerHTML = data.map(q=>{
+    const isOff = q.tradeCity!==q.regCity;
+    return `<tr>
+      <td class="mono">${q.no}</td><td>${q.merchant}</td><td>${q.store}</td>
+      <td>${q.status==='正常'?'<span class="badge b-green">正常</span>':'<span class="badge b-red">异常</span>'}</td>
+      <td class="mono" style="font-size:11px;color:var(--text2)">${q.last}</td>
+      <td style="color:${isOff?'var(--red-text)':'var(--text)'}">${q.tradeCity}</td>
+      <td style="color:var(--text2)">${q.regCity}</td>
+      <td>${isOff?'<span class="badge b-red">是</span>':'<span class="badge b-green">否</span>'}</td>
+      <td>${isOff?'<span class="badge b-red">是</span>':'<span class="badge b-green">否</span>'}</td>
+      <td style="display:flex;gap:4px">
+        ${q.status==='正常'&&isOff?`<button class="btn btn-danger btn-sm" onclick="freezeQR('${q.no}')">冻结</button>`:''}
+        <button class="btn btn-ghost btn-sm" onclick="toast('已通知商户核实','success')">通知商户</button>
+      </td>
+    </tr>`;
+  }).join('');
+  document.getElementById('antitamper-badge').textContent = STATE.qrs.filter(q=>q.tradeCity!==q.regCity).length + ' 疑似调包';
+}
+
+function renderOrders(){
+  const search = (document.getElementById('order-search')?.value||'').toLowerCase();
+  const fs = document.getElementById('order-filter-status')?.value||'';
+  const fc = document.getElementById('order-filter-channel')?.value||'';
+  const data = STATE.orders.filter(o=>{
+    if(search && !o.no.toLowerCase().includes(search) && !o.mno.toLowerCase().includes(search) && !o.third.toLowerCase().includes(search)) return false;
+    if(fs && o.status!==fs) return false;
+    if(fc && o.ch!==fc) return false;
+    return true;
+  });
+  document.getElementById('order-tbody').innerHTML = data.map(o=>`
+    <tr onclick="openOrderDetail('${o.no}')">
+      <td class="mono">${o.no}</td>
+      <td style="font-weight:500"><a onclick="event.stopPropagation();openMerchantDetail('${o.merchantNo}')" style="color:var(--accent);cursor:pointer">${o.merchant}</a></td>
+      <td class="mono">${o.mno}</td>
+      <td style="font-weight:500;color:var(--accent)">${o.amount}</td>
+      <td style="font-size:11.5px;color:var(--text2)">${o.type}</td>
+      <td><span class="badge b-gray">${o.ch}</span></td>
+      <td>${statusBadge(o.status)}</td>
+      <td class="mono" style="font-size:11px">${o.time}</td>
+      <td onclick="event.stopPropagation()"><button class="btn btn-ghost btn-sm" onclick="openOrderDetail('${o.no}')">详情</button></td>
+    </tr>`).join('');
+  document.getElementById('order-count').textContent = `共 ${data.length} 条（模拟数据）`;
+}
+
+function renderFlowLogs(){
+  document.getElementById('flow-tbody').innerHTML = STATE.flowLogs.map(f=>`
+    <tr>
+      <td class="mono">${f.no}</td><td class="mono">${f.mno}</td><td class="mono">${f.third}</td>
+      <td><span class="badge b-blue">${f.from}</span></td><td>${statusBadge(f.to)}</td>
+      <td style="font-size:11.5px;color:var(--text2)">${f.trigger}</td>
+      <td>${f.result==='成功'?'<span class="badge b-green">成功</span>':f.result==='失败'?'<span class="badge b-red">失败</span>':'<span class="badge b-amber">'+f.result+'</span>'}</td>
+      <td>${f.operator}</td><td class="mono" style="font-size:11px;color:var(--text2)">${f.time}</td>
+    </tr>`).join('');
+}
+
+function renderRefunds(){
+  document.getElementById('refund-tbody').innerHTML = STATE.refunds.map(r=>`
+    <tr>
+      <td class="mono">${r.no}</td><td class="mono">${r.orderNo}</td>
+      <td>${r.merchant}</td><td>${r.amount}</td>
+      <td style="color:var(--text2)">${r.reason}</td>
+      <td>${statusBadge(r.status)}</td>
+      <td class="mono" style="font-size:11px">${r.applied}</td>
+      <td class="mono" style="font-size:11px;color:var(--text2)">${r.done}</td>
+      <td><button class="btn btn-ghost btn-sm" onclick="toast('查看退款详情','info')">详情</button></td>
+    </tr>`).join('');
+}
+
+function renderCallbacks(){
+  document.getElementById('callback-tbody').innerHTML = STATE.callbacks.map(c=>`
+    <tr>
+      <td class="mono">${c.orderNo}</td><td>${c.merchant}</td>
+      <td class="mono" style="font-size:11px">${c.url}</td>
+      <td>${c.code===200?'<span class="badge b-green">'+c.code+'</span>':'<span class="badge b-red">'+c.code+'</span>'}</td>
+      <td style="text-align:center;color:${c.retry>5?'var(--red-text)':'var(--text)'}">${c.retry}</td>
+      <td>${statusBadge(c.status)}</td>
+      <td class="mono" style="font-size:11px">${c.time}</td>
+      <td>${c.status==='失败'?`<button class="btn btn-primary btn-sm" onclick="retryCallback('${c.orderNo}')">重试</button>`:`<button class="btn btn-ghost btn-sm" onclick="toast('查看回调详情','info')">详情</button>`}</td>
+    </tr>`).join('');
+  document.getElementById('callback-fail-badge').textContent = STATE.callbacks.filter(c=>c.status==='失败').length + ' 异常';
+}
+
+function renderDiffs(){
+  document.getElementById('diff-tbody').innerHTML = STATE.diffs.map(d=>`
+    <tr>
+      <td class="mono">${d.orderNo}</td><td>${d.merchant}</td>
+      <td>${d.amount1}</td><td style="color:var(--amber-text)">${d.amount2}</td>
+      <td style="color:var(--red-text);font-weight:500">${d.diff}</td>
+      <td><span class="badge b-red">${d.diffType}</span></td>
+      <td>${d.partner}</td>
+      <td>${statusBadge(d.status)}</td>
+      <td>${d.status==='待处理'?`<button class="btn btn-primary btn-sm" onclick="handleDiff('${d.orderNo}')">处理</button>`:`<button class="btn btn-ghost btn-sm" onclick="toast('查看差异详情','info')">详情</button>`}</td>
+    </tr>`).join('');
+  document.getElementById('diff-badge').textContent = STATE.diffs.filter(d=>d.status==='待处理').length + ' 待处理';
+  document.getElementById('reco-diff-count') && (document.getElementById('reco-diff-count').textContent = STATE.diffs.filter(d=>d.status==='待处理').length);
+}
+
+function renderRiskRules(){
+  document.getElementById('risk-rules-tbody').innerHTML = STATE.riskRules.map(r=>`
+    <tr>
+      <td class="mono">${r.no}</td><td style="font-weight:500">${r.name}</td>
+      <td>${r.type}</td><td style="color:var(--text2);font-size:11.5px">${r.cond}</td>
+      <td>${r.action==='拦截'?'<span class="badge b-red">拦截</span>':r.action==='人工审核'?'<span class="badge b-amber">人工审核</span>':'<span class="badge b-blue">预警</span>'}</td>
+      <td>${statusBadge(r.status)}</td>
+      <td>${r.today}</td>
+      <td><button class="btn btn-ghost btn-sm" onclick="toast('规则编辑功能','info')">编辑</button></td>
+    </tr>`).join('');
+}
+
+function renderRiskOrders(){
+  document.getElementById('risk-orders-tbody-2').innerHTML = STATE.riskOrders.map(r=>`
+    <tr>
+      <td class="mono">${r.orderNo}</td>
+      <td><a onclick="openMerchantDetail('${r.merchantNo}')" style="color:var(--accent);cursor:pointer">${r.merchant}</a></td>
+      <td>${r.amount}</td><td class="mono" style="font-size:11px">${r.rule}</td>
+      <td>${levelBadge(r.level)}</td>
+      <td>${r.action==='风控挂起'?'<span class="badge b-red">风控挂起</span>':'<span class="badge b-amber">'+r.action+'</span>'}</td>
+      <td>${statusBadge(r.status)}</td>
+      <td class="mono" style="font-size:11px">${r.time}</td>
+      <td>${(r.status==='待审核'||r.status==='已挂起')?`<button class="btn btn-primary btn-sm" onclick="handleRiskOrder('${r.orderNo}')">处理</button>`:'-'}</td>
+    </tr>`).join('');
+  document.getElementById('risk-orders-badge').textContent = STATE.riskOrders.filter(r=>r.status==='待审核'||r.status==='已挂起').length + ' 待处理';
+}
+
+function renderRiskMerchants(){
+  const data = STATE.merchants.filter(m=>m.risk==='中'||m.risk==='高');
+  document.getElementById('risk-merchants-tbody').innerHTML = data.map(m=>`
+    <tr onclick="openMerchantDetail('${m.no}')">
+      <td class="mono">${m.no}</td><td style="font-weight:500">${m.name}</td>
+      <td>${riskBadge(m.risk)}</td>
+      <td style="color:var(--text2);font-size:11.5px">${m.reason||'-'}</td>
+      <td style="color:var(--amber-text);font-size:11.5px">${m.risk==='高'?'回调异常/异地IP':'频率触发'}</td>
+      <td>${m.status==='已暂停'?'<span class="badge b-red">暂停转接</span>':m.risk==='中'?'<span class="badge b-amber">降低限额</span>':'<span class="badge b-amber">观察中</span>'}</td>
+      <td onclick="event.stopPropagation()" style="display:flex;gap:4px">
+        <button class="btn btn-ghost btn-sm" onclick="openMerchantDetail('${m.no}')">查看</button>
+        ${m.status==='正常'?`<button class="btn btn-danger btn-sm" onclick="suspendMerchant('${m.no}')">暂停转接</button>`:''}
+      </td>
+    </tr>`).join('');
+}
+
+function renderIndustry(){
+  document.getElementById('industry-tbody').innerHTML = STATE.industries.map((i,idx)=>`
+    <tr>
+      <td style="font-weight:500">${i.name}</td>
+      <td class="mono">${i.mcc}</td>
+      <td>${riskBadge(i.risk)}</td>
+      <td>${statusBadge(i.allow)}</td>
+      <td>${i.audit==='是'?'<span class="badge b-amber">是</span>':'<span class="badge b-gray">否</span>'}</td>
+      <td style="font-size:11.5px;color:var(--text2)">${i.extra}</td>
+      <td>${i.limit1}</td><td>${i.limit2}</td>
+      <td><button class="btn btn-ghost btn-sm" onclick="toast('行业 [${i.name}] 已更新','success')">编辑</button></td>
+    </tr>`).join('');
+}
+
+function renderBlacklist(){
+  document.getElementById('blacklist-tbody').innerHTML = STATE.blacklist.map((b,idx)=>`
+    <tr>
+      <td>${b.type==='IP地址'?'<span class="badge b-amber">IP地址</span>':b.type==='设备指纹'?'<span class="badge b-red">设备指纹</span>':'<span class="badge b-purple">'+b.type+'</span>'}</td>
+      <td class="mono">${b.value}</td><td>${b.merchant}</td>
+      <td style="color:var(--text2)">${b.reason}</td>
+      <td style="color:var(--text2);font-size:11.5px">${b.source}</td>
+      <td class="mono" style="font-size:11px">${b.time}</td>
+      <td><button class="btn btn-ghost btn-sm" onclick="removeBlacklist(${idx})">移除</button></td>
+    </tr>`).join('');
+}
+
+function renderChannels(){
+  document.getElementById('channel-cards').innerHTML = STATE.channels.map(c=>{
+    const colorMap = {blue:{bg:'var(--blue-bg)',color:'var(--accent)',border:'var(--blue-border)'},green:{bg:'var(--green-bg)',color:'var(--green)',border:'var(--green-border)'},amber:{bg:'var(--amber-bg)',color:'var(--amber)',border:'var(--amber-border)'}};
+    const cm = colorMap[c.color];
+    return `<div class="card" ${c.status!=='正常'?'style="border-top:3px solid var(--amber)"':''}>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+        <div style="display:flex;align-items:center;gap:10px">
+          <div style="width:38px;height:38px;border-radius:10px;background:${cm.bg};border:1px solid ${cm.border};display:flex;align-items:center;justify-content:center"><i class="ti ${c.icon}" style="color:${cm.color};font-size:18px"></i></div>
+          <div><div style="font-weight:600;font-size:14px">${c.name}</div><div style="font-size:11px;color:var(--text3)">${c.partner}</div></div>
+        </div>
+        ${c.status==='正常'?'<span class="badge b-green">正常</span>':'<span class="badge b-amber">'+c.status+'</span>'}
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px">
+        <div style="background:var(--surface2);border-radius:var(--radius);padding:10px;font-size:11px;color:var(--text2)">成功率<div style="font-size:15px;font-weight:600;color:${c.status==='正常'?'var(--text)':'var(--amber-text)'};margin-top:3px">${c.rate}</div></div>
+        <div style="background:var(--surface2);border-radius:var(--radius);padding:10px;font-size:11px;color:var(--text2)">响应时间<div style="font-size:15px;font-weight:600;color:${c.status==='正常'?'var(--text)':'var(--amber-text)'};margin-top:3px">${c.rt}</div></div>
+      </div>
+      <div style="font-size:11px;color:var(--text3);margin-bottom:10px">API版本: ${c.version} · 权重: ${c.weight}</div>
+      <div style="display:flex;gap:6px">
+        <button class="btn btn-ghost btn-sm" style="flex:1" onclick="openChannelDetail('${c.code}')">配置</button>
+        <button class="btn btn-ghost btn-sm" style="flex:1" onclick="testChannel('${c.code}')"><i class="ti ti-bolt"></i>测试</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderDevelopers(){
+  document.getElementById('developer-tbody').innerHTML = STATE.developers.map(d=>`
+    <tr onclick="event.stopPropagation()">
+      <td class="mono">${d.mno}</td>
+      <td style="font-weight:500"><a onclick="openMerchantDetail('${d.mno}')" style="color:var(--accent);cursor:pointer">${d.name}</a></td>
+      <td class="mono">${d.appid}</td><td>${statusBadge(d.status)}</td>
+      <td class="mono" style="font-size:11px">${d.callback}</td>
+      <td style="font-size:11.5px;color:var(--text2)">${d.ip}</td>
+      <td style="font-size:11.5px">${d.sign}</td>
+      <td class="mono" style="font-size:11px;color:var(--text2)">${d.last}</td>
+      <td style="display:flex;gap:4px">
+        <button class="btn btn-ghost btn-sm" onclick="openKeyDetail('${d.mno}')">查看</button>
+        <button class="btn btn-ghost btn-sm" onclick="resetKey('${d.mno}')">重置</button>
+      </td>
+    </tr>`).join('');
+}
+
+function renderAPIKeys(){
+  document.getElementById('apikey-tbody').innerHTML = STATE.apikeys.map(k=>`
+    <tr onclick="event.stopPropagation()">
+      <td class="mono">${k.mno}</td>
+      <td><a onclick="openMerchantDetail('${k.mno}')" style="color:var(--accent);cursor:pointer">${k.name}</a></td>
+      <td class="mono">${k.appid}</td>
+      <td class="mono">${k.key}</td>
+      <td style="font-size:11.5px">${k.sign}</td>
+      <td>${statusBadge(k.pubkey)}</td>
+      <td class="mono" style="font-size:11px">${k.created}</td>
+      <td style="display:flex;gap:4px">
+        <button class="btn btn-ghost btn-sm" onclick="openKeyDetail('${k.mno}')">查看</button>
+        <button class="btn btn-ghost btn-sm" onclick="resetKey('${k.mno}')">轮换</button>
+      </td>
+    </tr>`).join('');
+}
+
+function renderPartners(){
+  document.getElementById('partner-tbody').innerHTML = STATE.partners.map(p=>`
+    <tr>
+      <td class="mono">${p.no}</td>
+      <td style="font-weight:500">${p.name}</td>
+      <td><span class="badge b-blue">${p.type}</span></td>
+      <td>${statusBadge(p.status)}</td>
+      <td class="mono">${p.agreement}</td>
+      <td style="font-size:11.5px;color:var(--text2)">${p.channels}</td>
+      <td>${p.tech}</td><td>${p.compliance}</td>
+      <td class="mono" style="font-size:11px">${p.started}</td>
+      <td style="display:flex;gap:4px">
+        <button class="btn btn-ghost btn-sm" onclick="toast('查看合作机构详情','info')">查看</button>
+        <button class="btn btn-ghost btn-sm" onclick="toast('协议已归档','success')">归档</button>
+      </td>
+    </tr>`).join('');
+}
+
+function renderOpLogs(){
+  document.getElementById('op-log-tbody').innerHTML = STATE.opLogs.map(l=>`
+    <tr>
+      <td>${l.user}</td><td>${l.module}</td><td>${l.op}</td>
+      <td class="mono">${l.target}</td><td class="mono">${l.ip}</td>
+      <td>${statusBadge(l.result)}</td><td class="mono" style="font-size:11px">${l.time}</td>
+    </tr>`).join('');
+}
+
+function renderAlerts(){
+  document.getElementById('alert-tbody').innerHTML = STATE.alerts.map(a=>`
+    <tr>
+      <td class="mono">${a.no}</td>
+      <td style="font-size:11.5px;color:${a.level==='高'?'var(--red-text)':'var(--amber-text)'}">${a.type}</td>
+      <td>${levelBadge(a.level)}</td>
+      <td>${a.user}</td><td class="mono">${a.ip}</td>
+      <td class="mono" style="font-size:11px">${a.time}</td>
+      <td>${statusBadge(a.status)}</td>
+      <td style="color:var(--text2)">${a.handler||'—'}</td>
+      <td>${a.status==='待处理'?`<button class="btn btn-primary btn-sm" onclick="handleAlert('${a.no}')">处理</button>`:`<button class="btn btn-ghost btn-sm" onclick="toast('查看处理记录','info')">查看</button>`}</td>
+    </tr>`).join('');
+  document.getElementById('alert-pending-badge').textContent = STATE.alerts.filter(a=>a.status==='待处理').length + ' 待处理';
+}
+
+
+// ═════════════ V4 新增渲染函数 ═════════════
+
+function clsBadge(c){
+  if(c==='C3') return '<span class="badge b-red">C3</span>';
+  if(c==='C2') return '<span class="badge b-amber">C2</span>';
+  if(c==='C1') return '<span class="badge b-green">C1</span>';
+  return c;
+}
+
+function renderFieldClassification(){
+  document.getElementById('field-classification-tbody').innerHTML = STATE.fields.map(f=>`
+    <tr>
+      <td style="font-weight:500">${f.name}</td>
+      <td>${clsBadge(f.cls)}</td>
+      <td style="color:var(--text2);font-size:11.5px">${f.biz}</td>
+      <td style="font-size:11.5px;color:${f.store.includes('禁止')?'var(--red-text)':'var(--text)'}">${f.store}</td>
+      <td style="font-size:11.5px">${f.transmit}</td>
+      <td style="font-size:11.5px">${f.display}</td>
+      <td style="font-size:11.5px;color:var(--text2)">${f.ac}</td>
+      <td><button class="btn btn-ghost btn-sm" onclick="toast('字段配置已更新','success')">编辑</button></td>
+    </tr>`).join('');
+}
+
+function renderLifecycle(){
+  const stages = [
+    {name:'收集',icon:'ti-clipboard-data',color:'var(--accent)',desc:'最小化原则、明示同意、来源追溯',ctrls:['用户授权确认','数据来源记录','最小化收集字段']},
+    {name:'传输',icon:'ti-send',color:'var(--accent)',desc:'TLS 1.2+ / 国密 SM2 / 字段级加密',ctrls:['强制 HTTPS','C3 字段额外加密','双向证书认证']},
+    {name:'存储',icon:'ti-database',color:'var(--accent)',desc:'C3 禁止存储 / C2 加密存储 / C1 明文',ctrls:['AES-256-GCM 加密','密钥分离管理','加密字段索引']},
+    {name:'使用',icon:'ti-eye',color:'var(--accent)',desc:'按角色脱敏 / 明文需审批 / 访问留痕',ctrls:['基于角色脱敏','审批查看','敏感访问日志']},
+    {name:'删除',icon:'ti-eraser',color:'var(--amber)',desc:'双人复核 / 留痕 / 可追溯',ctrls:['申请-审批流程','操作日志记录','数据回收站']},
+    {name:'销毁',icon:'ti-flame',color:'var(--red)',desc:'物理销毁 / 不可恢复 / 销毁记录单',ctrls:['多次覆写','物理介质销毁','出具销毁记录单']},
+  ];
+  document.getElementById('lifecycle-stages').innerHTML = stages.map((s,i)=>`
+    <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px">
+      <div style="display:flex;align-items:center;gap:9px;margin-bottom:10px">
+        <div style="width:30px;height:30px;border-radius:8px;background:${s.color}22;color:${s.color};display:flex;align-items:center;justify-content:center"><i class="ti ${s.icon}" style="font-size:16px"></i></div>
+        <div><div style="font-weight:600;font-size:13px">${i+1}. ${s.name}</div><div style="font-size:10.5px;color:var(--text3)">${s.desc}</div></div>
+      </div>
+      <div style="font-size:11.5px;line-height:1.7">
+        ${s.ctrls.map(c=>`<div style="color:var(--text2);padding:2px 0"><i class="ti ti-check" style="color:var(--green);font-size:12px;vertical-align:-1px"></i> ${c}</div>`).join('')}
+      </div>
+    </div>`).join('');
+}
+
+function renderLifecycleLogs(){
+  const stageF = document.getElementById('lc-filter-stage')?.value||'';
+  const clsF = document.getElementById('lc-filter-class')?.value||'';
+  const data = STATE.lifecycle.filter(l=>{
+    if(stageF && l.stage!==stageF) return false;
+    if(clsF && l.cls!==clsF) return false;
+    return true;
+  });
+  document.getElementById('lifecycle-tbody').innerHTML = data.map(l=>{
+    const stageColor = {'收集':'b-blue','传输':'b-blue','存储':'b-blue','使用':'b-blue','删除':'b-amber','销毁':'b-red'}[l.stage]||'b-gray';
+    return `<tr>
+      <td class="mono">${l.no}</td>
+      <td><span class="badge ${stageColor}">${l.stage}</span></td>
+      <td>${clsBadge(l.cls)}</td>
+      <td style="font-weight:500">${l.field}</td>
+      <td class="mono" style="font-size:11px">${l.merchant}</td>
+      <td>${l.user}</td>
+      <td style="font-size:11.5px;color:var(--text2)">${l.source}</td>
+      <td class="mono" style="font-size:11px">${l.time}</td>
+      <td>${l.result==='成功'?'<span class="badge b-green">成功</span>':'<span class="badge b-red">失败</span>'}</td>
+    </tr>`;
+  }).join('');
+}
+
+function renderMaskRules(){
+  document.getElementById('mask-tbody').innerHTML = STATE.maskRules.map((m,idx)=>`
+    <tr>
+      <td style="font-weight:500">${m.field}</td>
+      <td>${clsBadge(m.cls)}</td>
+      <td>${m.role}</td>
+      <td style="font-size:11.5px">${m.strategy}</td>
+      <td class="mono" style="font-size:11.5px;color:var(--text2)">${m.example}</td>
+      <td>${m.approve==='是'?'<span class="badge b-amber">需审批</span>':'<span class="badge b-gray">否</span>'}</td>
+      <td>${statusBadge(m.status)}</td>
+      <td><button class="btn btn-ghost btn-sm" onclick="toast('脱敏规则已更新','success')">编辑</button></td>
+    </tr>`).join('');
+}
+
+function renderDestructions(){
+  document.getElementById('destruction-tbody').innerHTML = STATE.destructions.map(d=>`
+    <tr>
+      <td class="mono">${d.no}</td>
+      <td>${d.type==='物理销毁'?'<span class="badge b-red">物理销毁</span>':'<span class="badge b-amber">逻辑删除</span>'}</td>
+      <td>${d.merchant}</td>
+      <td style="font-size:12px">${d.dataType}</td>
+      <td>${clsBadge(d.cls)}</td>
+      <td>${d.amount}</td>
+      <td>${d.applicant}</td>
+      <td style="color:${d.reviewer?'var(--text)':'var(--text3)'}">${d.reviewer||'—'}</td>
+      <td>${d.status==='待审批'?'<span class="badge b-amber">待审批</span>':'<span class="badge b-green">已销毁</span>'}</td>
+      <td class="mono" style="font-size:11px">${d.time}</td>
+      <td>${d.status==='待审批'?`<button class="btn btn-primary btn-sm" onclick="approveDestruction('${d.no}')">审批</button>`:`<button class="btn btn-ghost btn-sm" onclick="toast('查看销毁记录单','info')">查看</button>`}</td>
+    </tr>`).join('');
+}
+
+function renderKeyOps(){
+  document.getElementById('key-mgmt-tbody').innerHTML = STATE.keyOps.map(k=>`
+    <tr>
+      <td class="mono">${k.no}</td>
+      <td class="mono">${k.key}</td>
+      <td style="font-size:11.5px">${k.type}</td>
+      <td><span class="badge ${k.op==='生成'?'b-green':k.op==='撤销'?'b-red':k.op.includes('轮换')?'b-amber':'b-blue'}">${k.op}</span></td>
+      <td>${k.user}</td>
+      <td class="mono" style="font-size:11px">${k.time}</td>
+      <td style="font-size:11.5px;color:var(--text2)">${k.approver}</td>
+      <td>${k.result==='成功'?'<span class="badge b-green">成功</span>':'<span class="badge b-amber">待审批</span>'}</td>
+      <td>${k.result==='待审批'?`<button class="btn btn-primary btn-sm" onclick="approveKeyOp('${k.no}')">审批</button>`:`<button class="btn btn-ghost btn-sm" onclick="toast('查看密钥操作详情','info')">查看</button>`}</td>
+    </tr>`).join('');
+}
+
+function renderSensitive(){
+  // 从 lifecycle 中筛"使用"环节
+  const data = STATE.lifecycle.filter(l=>l.stage==='使用');
+  document.getElementById('sensitive-tbody').innerHTML = data.map(l=>`
+    <tr>
+      <td class="mono">${l.no}</td>
+      <td>${clsBadge(l.cls)}</td>
+      <td style="font-weight:500">${l.field}</td>
+      <td class="mono" style="font-size:11px">${l.merchant}</td>
+      <td>${l.user}</td>
+      <td style="font-size:11.5px;color:var(--text2)">${l.source}</td>
+      <td>${l.source.includes('审批')?'<span class="badge b-green">已审批</span>':'<span class="badge b-gray">系统授权</span>'}</td>
+      <td class="mono" style="font-size:11px">${l.time}</td>
+    </tr>`).join('');
+}
+
+function switchExtBlTab(ev, tabId){
+  document.querySelectorAll('#view-external-blacklist .tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('#view-external-blacklist .tab-content').forEach(t=>t.classList.remove('active'));
+  ev.currentTarget.classList.add('active');
+  document.getElementById(tabId).classList.add('active');
+}
+
+function renderExtBl(){
+  document.getElementById('ext-bl-incoming-tbody').innerHTML = STATE.extBlIncoming.map(b=>`
+    <tr>
+      <td><span class="badge b-blue">${b.source}</span></td>
+      <td style="font-size:11.5px">${b.type}</td>
+      <td>${levelBadge(b.level)}</td>
+      <td class="mono" style="font-size:11.5px">${b.value}</td>
+      <td style="color:var(--text2);font-size:11.5px">${b.subject}</td>
+      <td class="mono" style="font-size:11px">${b.time}</td>
+      <td>${b.hit==='已命中'?'<span class="badge b-red">已命中</span>':'<span class="badge b-gray">未命中</span>'}</td>
+      <td><button class="btn btn-ghost btn-sm" onclick="toast('查看黑名单详情与处置记录','info')">${b.action}</button></td>
+    </tr>`).join('');
+  document.getElementById('ext-bl-outgoing-tbody').innerHTML = STATE.extBlOutgoing.map(b=>`
+    <tr>
+      <td class="mono">${b.no}</td>
+      <td style="font-size:11.5px">${b.type}</td>
+      <td>${levelBadge(b.level)}</td>
+      <td>${b.subject}</td>
+      <td style="font-size:11.5px;color:var(--text2)">${b.target}</td>
+      <td>${b.user}</td>
+      <td class="mono" style="font-size:11px">${b.time}</td>
+      <td>${b.status==='已接收'?'<span class="badge b-green">已接收</span>':'<span class="badge b-amber">待确认</span>'}</td>
+    </tr>`).join('');
+}
+
+function renderRiskMonitor(){
+  document.getElementById('risk-monitor-tbody').innerHTML = STATE.riskMonitors.map(r=>`
+    <tr>
+      <td class="mono">${r.no}</td>
+      <td style="font-weight:500">${r.name}</td>
+      <td style="font-size:11.5px;color:var(--text2)">${r.type}</td>
+      <td>${levelBadge(r.level)}</td>
+      <td>${r.status==='已触发'?'<span class="badge b-red"><span class="b-dot" style="background:var(--red)"></span>已触发</span>':'<span class="badge b-green"><span class="b-dot" style="background:var(--green)"></span>正常</span>'}</td>
+      <td style="font-size:11.5px;color:var(--text2)">${r.desc}</td>
+      <td class="mono" style="font-size:11px">${r.last||'—'}</td>
+      <td>${r.status==='已触发'?`<button class="btn btn-primary btn-sm" onclick="handleRiskMonitor('${r.no}')">处理</button>`:`<button class="btn btn-ghost btn-sm" onclick="toast('查看监测规则配置','info')">配置</button>`}</td>
+    </tr>`).join('');
+}
+
+
+// ═════════════ INTERACTION FUNCTIONS ═════════════
+
+// 商户详情（含其订单/收款码/风险）
+function openMerchantDetail(no){
+  const m = STATE.merchants.find(x=>x.no===no);
+  if(!m){ toast('未找到该商户','error'); return; }
+  document.getElementById('mdetail-title').textContent = m.name + ' - 详情';
+
+  // Tab 1: 基础信息
+  document.getElementById('mdt-info').innerHTML = `
+    <div class="stats-grid">
+      <div class="stat-mini"><div class="stat-mini-label">今日转接额</div><div class="stat-mini-val" style="color:var(--accent)">${m.amount}</div></div>
+      <div class="stat-mini"><div class="stat-mini-label">累计订单数</div><div class="stat-mini-val">${m.orders}</div></div>
+      <div class="stat-mini"><div class="stat-mini-label">退款率</div><div class="stat-mini-val" style="color:${parseFloat(m.refund)>5?'var(--red)':parseFloat(m.refund)>3?'var(--amber)':'var(--text)'}">${m.refund}</div></div>
+    </div>
+    <div class="detail-row"><span class="detail-label">商户编号</span><span class="detail-val mono">${m.no}</span></div>
+    <div class="detail-row"><span class="detail-label">商户名称</span><span class="detail-val" style="font-weight:500">${m.name}</span></div>
+    <div class="detail-row"><span class="detail-label">行业 / MCC</span><span class="detail-val">${m.industry} / <span class="mono">${m.mcc}</span></span></div>
+    <div class="detail-row"><span class="detail-label">合作收单机构</span><span class="detail-val">${m.partner}</span></div>
+    <div class="detail-row"><span class="detail-label">入网状态</span><span class="detail-val">${statusBadge(m.status)}</span></div>
+    <div class="detail-row"><span class="detail-label">风险等级</span><span class="detail-val">${riskBadge(m.risk)}</span></div>
+    <div class="detail-row"><span class="detail-label">单笔限额</span><span class="detail-val">¥${m.limit1.toLocaleString()}</span></div>
+    <div class="detail-row"><span class="detail-label">单日限额</span><span class="detail-val">¥${m.limit2.toLocaleString()}</span></div>
+    <div class="detail-row"><span class="detail-label">入网时间</span><span class="detail-val mono">${m.joined}</span></div>
+    <div class="detail-row"><span class="detail-label">资金结算路径</span><span class="detail-val" style="color:var(--accent)">由 ${m.partner} 直接处理，本平台不介入</span></div>
+    ${m.reason?`<div class="detail-row"><span class="detail-label">风险说明</span><span class="detail-val" style="color:var(--red-text)">${m.reason}</span></div>`:''}
+  `;
+
+  // Tab 2: 订单
+  const orders = STATE.orders.filter(o=>o.merchantNo===no);
+  document.getElementById('mdt-orders-count').textContent = orders.length;
+  document.getElementById('mdt-orders').innerHTML = orders.length ? `
+    <table>
+      <thead><tr><th>系统订单号</th><th>金额</th><th>支付方式</th><th>状态</th><th>时间</th></tr></thead>
+      <tbody>${orders.map(o=>`<tr><td class="mono">${o.no}</td><td style="color:var(--accent)">${o.amount}</td><td style="font-size:11.5px;color:var(--text2)">${o.type}</td><td>${statusBadge(o.status)}</td><td class="mono" style="font-size:11px">${o.time}</td></tr>`).join('')}</tbody>
+    </table>` : '<div class="empty-state"><i class="ti ti-receipt-off"></i><div class="es-title">暂无订单</div></div>';
+
+  // Tab 3: 收款码
+  const qrs = STATE.qrs.filter(q=>q.merchantNo===no);
+  document.getElementById('mdt-qr-count').textContent = qrs.length;
+  document.getElementById('mdt-qr').innerHTML = qrs.length ? `
+    <table>
+      <thead><tr><th>收款码编号</th><th>所属门店</th><th>码类型</th><th>状态</th><th>最近交易</th></tr></thead>
+      <tbody>${qrs.map(q=>`<tr><td class="mono">${q.no}</td><td>${q.store}</td><td><span class="badge b-gray">${q.type}</span></td><td>${statusBadge(q.status)}</td><td class="mono" style="font-size:11px">${q.last}</td></tr>`).join('')}</tbody>
+    </table>` : '<div class="empty-state"><i class="ti ti-qrcode"></i><div class="es-title">暂无收款码</div></div>';
+
+  // Tab 4: 风险记录
+  const rOrders = STATE.riskOrders.filter(r=>r.merchantNo===no);
+  document.getElementById('mdt-risk').innerHTML = (rOrders.length||m.risk!=='低') ? `
+    <div class="detail-row"><span class="detail-label">风险等级</span><span class="detail-val">${riskBadge(m.risk)}</span></div>
+    <div class="detail-row"><span class="detail-label">退款率</span><span class="detail-val">${m.refund}</span></div>
+    <div class="detail-row"><span class="detail-label">风险原因</span><span class="detail-val">${m.reason||'-'}</span></div>
+    ${rOrders.length?`<div style="margin-top:14px;font-size:12.5px;font-weight:600;margin-bottom:8px">命中风控的订单</div>
+    <table>
+      <thead><tr><th>订单号</th><th>金额</th><th>命中规则</th><th>处置</th><th>状态</th></tr></thead>
+      <tbody>${rOrders.map(r=>`<tr><td class="mono">${r.orderNo}</td><td>${r.amount}</td><td class="mono" style="font-size:11px">${r.rule}</td><td><span class="badge b-amber">${r.action}</span></td><td>${statusBadge(r.status)}</td></tr>`).join('')}</tbody>
+    </table>`:''}
+  ` : '<div class="empty-state"><i class="ti ti-shield-check"></i><div class="es-title">无风险记录</div><div class="es-desc">该商户当前状态良好</div></div>';
+
+  // 按钮
+  const btn = document.getElementById('mdt-suspend-btn');
+  if(m.status==='正常'){
+    btn.textContent = '暂停转接';
+    btn.className = 'btn btn-danger';
+    btn.onclick = ()=>{ closeModal('modal-merchant-detail'); suspendMerchant(no); };
+  } else if(m.status==='已暂停'){
+    btn.textContent = '恢复转接';
+    btn.className = 'btn btn-success';
+    btn.onclick = ()=>{ closeModal('modal-merchant-detail'); resumeMerchant(no); };
+  } else {
+    btn.style.display = 'none';
+  }
+
+  // reset tabs to first
+  document.querySelectorAll('#modal-merchant-detail .tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('#modal-merchant-detail .tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('#modal-merchant-detail .tab')[0].classList.add('active');
+  document.getElementById('mdt-info').classList.add('active');
+
+  openModal('modal-merchant-detail');
+}
+
+function switchMdtTab(ev, tabId){
+  document.querySelectorAll('#modal-merchant-detail .tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('#modal-merchant-detail .tab-content').forEach(t=>t.classList.remove('active'));
+  ev.currentTarget.classList.add('active');
+  document.getElementById(tabId).classList.add('active');
+}
+
+// 订单详情（含状态时间线）
+function openOrderDetail(no){
+  const o = STATE.orders.find(x=>x.no===no);
+  if(!o){ toast('未找到该订单','error'); return; }
+  const m = STATUS_MAP[o.status]||{label:o.status,color:'var(--text)'};
+  document.getElementById('order-detail-body').innerHTML = `
+    <div class="detail-row"><span class="detail-label">系统订单号</span><span class="detail-val mono">${o.no}</span></div>
+    <div class="detail-row"><span class="detail-label">商户订单号</span><span class="detail-val mono">${o.mno}</span></div>
+    <div class="detail-row"><span class="detail-label">三方交易号</span><span class="detail-val mono">${o.third}</span></div>
+    <div class="detail-row"><span class="detail-label">商户</span><span class="detail-val"><a onclick="closeModal('modal-order-detail');openMerchantDetail('${o.merchantNo}')" style="color:var(--accent);cursor:pointer">${o.merchant}</a></span></div>
+    <div class="detail-row"><span class="detail-label">转接金额</span><span class="detail-val" style="color:var(--accent);font-weight:500">${o.amount}</span></div>
+    <div class="detail-row"><span class="detail-label">支付方式</span><span class="detail-val">${o.type}</span></div>
+    <div class="detail-row"><span class="detail-label">通道</span><span class="detail-val"><span class="badge b-gray">${o.ch}</span></span></div>
+    <div class="detail-row"><span class="detail-label">订单状态</span><span class="detail-val">${statusBadge(o.status)}</span></div>
+    <div class="detail-row"><span class="detail-label">资金流向</span><span class="detail-val" style="color:var(--accent)">由通道方（合作收单机构）直接处理</span></div>
+    <div class="detail-row"><span class="detail-label">下单时间</span><span class="detail-val mono">${o.time}</span></div>
+    <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border);font-weight:600;font-size:13px;margin-bottom:10px">状态时间线</div>
+    <div style="padding-left:8px">
+      <div style="display:flex;gap:10px;margin-bottom:8px"><div style="width:8px;height:8px;border-radius:50%;background:var(--text3);margin-top:5px"></div><div style="font-size:12px"><div>INIT - 初始化</div><div style="color:var(--text3);font-size:11px">${o.time}</div></div></div>
+      <div style="display:flex;gap:10px;margin-bottom:8px"><div style="width:8px;height:8px;border-radius:50%;background:var(--accent);margin-top:5px"></div><div style="font-size:12px"><div>PAYING - 支付中</div><div style="color:var(--text3);font-size:11px">${o.time}</div></div></div>
+      <div style="display:flex;gap:10px"><div style="width:8px;height:8px;border-radius:50%;background:${m.color};margin-top:5px"></div><div style="font-size:12px"><div style="color:${m.color};font-weight:500">${o.status} - ${m.label}</div><div style="color:var(--text3);font-size:11px">${o.time}</div></div></div>
+    </div>
+  `;
+  openModal('modal-order-detail');
+}
+
+// 审核详情
+function openAuditDetail(no){
+  const a = STATE.auditApps.find(x=>x.no===no);
+  if(!a) return;
+  document.getElementById('audit-modal-title').textContent = `商户资料审核 - ${a.name}`;
+  document.getElementById('audit-modal-body').innerHTML = `
+    <div class="detail-row"><span class="detail-label">申请编号</span><span class="detail-val mono">${a.no}</span></div>
+    <div class="detail-row"><span class="detail-label">商户名称</span><span class="detail-val" style="font-weight:500">${a.name}</span></div>
+    <div class="detail-row"><span class="detail-label">统一社会信用代码</span><span class="detail-val mono">${a.credit}</span></div>
+    <div class="detail-row"><span class="detail-label">行业类型</span><span class="detail-val">${a.industry}</span></div>
+    <div class="detail-row"><span class="detail-label">目标收单机构</span><span class="detail-val">${a.partner}</span></div>
+    <div class="detail-row"><span class="detail-label">法人姓名</span><span class="detail-val">张 ●●（敏感字段已加密）</span></div>
+    <div class="detail-row"><span class="detail-label">结算路径</span><span class="detail-val" style="color:var(--accent)">由合作收单机构直接处理，本平台不介入</span></div>
+    <div class="detail-row"><span class="detail-label">当前状态</span><span class="detail-val">${statusBadge(a.status)}</span></div>
+    <div class="form-group" style="margin-top:14px"><label>审核意见</label><textarea id="audit-comment" placeholder="填写审核意见…"></textarea></div>
+  `;
+  const passBtn = document.getElementById('audit-pass-btn');
+  const rejectBtn = document.getElementById('audit-reject-btn');
+  if(a.status==='待初审'){
+    passBtn.style.display = 'inline-flex';
+    rejectBtn.style.display = 'inline-flex';
+    passBtn.onclick = ()=>{ a.status = '已通过'; toast(`商户 [${a.name}] 已通过初审，资料已转交合作收单机构`,'success'); closeModal('modal-audit-detail'); renderAudit(); refreshBadges(); };
+    rejectBtn.onclick = ()=>{ a.status = '已拒绝'; toast(`已拒绝商户 [${a.name}] 的入网申请`,'info'); closeModal('modal-audit-detail'); renderAudit(); refreshBadges(); };
+  } else {
+    passBtn.style.display = 'none';
+    rejectBtn.style.display = 'none';
+  }
+  openModal('modal-audit-detail');
+}
+
+// 通道详情
+function openChannelDetail(code){
+  const c = STATE.channels.find(x=>x.code===code);
+  if(!c) return;
+  document.getElementById('ch-modal-title').textContent = `通道配置 - ${c.name}`;
+  document.getElementById('ch-modal-body').innerHTML = `
+    <div class="detail-row"><span class="detail-label">通道代码</span><span class="detail-val mono">${c.code}</span></div>
+    <div class="detail-row"><span class="detail-label">通道名称</span><span class="detail-val" style="font-weight:500">${c.name}</span></div>
+    <div class="detail-row"><span class="detail-label">合作收单机构</span><span class="detail-val">${c.partner}</span></div>
+    <div class="detail-row"><span class="detail-label">API版本</span><span class="detail-val">${c.version}</span></div>
+    <div class="detail-row"><span class="detail-label">运行状态</span><span class="detail-val">${c.status==='正常'?'<span class="badge b-green">正常</span>':'<span class="badge b-amber">'+c.status+'</span>'}</span></div>
+    <div class="detail-row"><span class="detail-label">成功率</span><span class="detail-val">${c.rate}</span></div>
+    <div class="detail-row"><span class="detail-label">响应时间</span><span class="detail-val">${c.rt}</span></div>
+    <div class="detail-row"><span class="detail-label">路由权重</span><span class="detail-val">${c.weight}</span></div>
+    <div class="detail-row"><span class="detail-label">平台回调基址</span><span class="detail-val mono">https://your-domain.com/notify/${c.code.toLowerCase()}</span></div>
+    <div class="detail-row"><span class="detail-label">对账文件获取</span><span class="detail-val">每日 08:00 自动拉取</span></div>
+    <div class="detail-row"><span class="detail-label">资金流说明</span><span class="detail-val" style="color:var(--accent)">资金由 ${c.partner} 直接处理，本平台不接触资金</span></div>
+  `;
+  openModal('modal-channel-detail');
+}
+
+function testChannel(code){
+  const c = STATE.channels.find(x=>x.code===code);
+  toast(`通道 [${c.name}] 连通性测试通过`, 'success');
+}
+
+// 密钥详情
+function openKeyDetail(mno){
+  const d = STATE.developers.find(x=>x.mno===mno);
+  const k = STATE.apikeys.find(x=>x.mno===mno);
+  if(!d) return;
+  document.getElementById('key-modal-body').innerHTML = `
+    <div class="detail-row"><span class="detail-label">商户名称</span><span class="detail-val" style="font-weight:500">${d.name}</span></div>
+    <div class="detail-row"><span class="detail-label">AppID</span><span class="detail-val mono">${d.appid}</span></div>
+    <div class="detail-row"><span class="detail-label">API Key</span><span class="detail-val mono">${k?k.key:'sk_live_••••••••••••••••0000'} <button class="btn btn-ghost btn-sm" onclick="toast('需走审批流程方可查看完整密钥，已记入敏感信息访问记录','info')">申请查看</button></span></div>
+    <div class="detail-row"><span class="detail-label">签名方式</span><span class="detail-val">${d.sign}</span></div>
+    <div class="detail-row"><span class="detail-label">回调地址</span><span class="detail-val mono">${d.callback}</span></div>
+    <div class="detail-row"><span class="detail-label">IP白名单</span><span class="detail-val mono">${d.ip}</span></div>
+    <div class="detail-row"><span class="detail-label">生产API地址</span><span class="detail-val mono">https://api.your-domain.com/v1</span></div>
+    <div class="detail-row"><span class="detail-label">沙箱API地址</span><span class="detail-val mono">https://sandbox.your-domain.com/v1</span></div>
+    <div class="detail-row"><span class="detail-label">密钥生成时间</span><span class="detail-val mono">${k?k.created:'-'}</span></div>
+  `;
+  openModal('modal-key-detail');
+}
+
+// ═════════════ STATE OPERATIONS (互通) ═════════════
+function suspendMerchant(no){
+  const m = STATE.merchants.find(x=>x.no===no);
+  if(!m) return;
+  confirmDialog(
+    '暂停商户交易转接',
+    `确认暂停商户 <strong>${m.name}</strong> 的交易信息转接？<br><br><span style="color:var(--text3);font-size:12px">本操作仅暂停技术接口转接，不涉及资金操作。资金清算事项请联系合作收单机构 ${m.partner}。</span>`,
+    ()=>{
+      m.status = '已暂停';
+      STATE.opLogs.unshift({user:'admin',module:'风控管理',op:'暂停商户交易信息转接',target:m.no,ip:'10.0.1.100',result:'成功',time:new Date().toLocaleString('zh-CN',{hour12:false}).replace(/\//g,'-')});
+      toast(`已暂停 [${m.name}] 的交易转接，已通知 ${m.partner}`, 'success');
+      const cur = document.querySelector('.nav-item.active')?.dataset.view;
+      if(cur) refreshView(cur);
+      refreshBadges();
+    }
+  );
+}
+
+function resumeMerchant(no){
+  const m = STATE.merchants.find(x=>x.no===no);
+  if(!m) return;
+  m.status = '正常';
+  STATE.opLogs.unshift({user:'admin',module:'风控管理',op:'恢复商户交易信息转接',target:m.no,ip:'10.0.1.100',result:'成功',time:new Date().toLocaleString('zh-CN',{hour12:false}).replace(/\//g,'-')});
+  toast(`已恢复 [${m.name}] 的交易转接`, 'success');
+  const cur = document.querySelector('.nav-item.active')?.dataset.view;
+  if(cur) refreshView(cur);
+}
+
+function adjustRiskLevel(no){
+  const m = STATE.merchants.find(x=>x.no===no);
+  if(!m) return;
+  const next = {'低':'中','中':'高','高':'低'};
+  confirmDialog(
+    '调整风险等级',
+    `将商户 <strong>${m.name}</strong> 的风险等级从 <strong>${m.risk}</strong> 调整为 <strong>${next[m.risk]}</strong>？`,
+    ()=>{
+      m.risk = next[m.risk];
+      toast(`已将 [${m.name}] 风险等级调整为 ${m.risk}`, 'success');
+      const cur = document.querySelector('.nav-item.active')?.dataset.view;
+      if(cur) refreshView(cur);
+    }
+  );
+}
+
+function freezeQR(no){
+  const q = STATE.qrs.find(x=>x.no===no);
+  if(!q) return;
+  confirmDialog(
+    '冻结收款码',
+    `确认冻结收款码 <strong>${q.no}</strong>（商户：${q.merchant}）？<br><br><span style="color:var(--text3);font-size:12px">冻结后该收款码无法再接收交易转接，需经审核后方可解冻。</span>`,
+    ()=>{
+      q.status = '已冻结';
+      STATE.opLogs.unshift({user:'admin',module:'收款码管理',op:'冻结收款码',target:q.no,ip:'10.0.1.100',result:'成功',time:new Date().toLocaleString('zh-CN',{hour12:false}).replace(/\//g,'-')});
+      toast(`收款码 [${q.no}] 已冻结，已通知合作收单机构`, 'success');
+      const cur = document.querySelector('.nav-item.active')?.dataset.view;
+      if(cur) refreshView(cur);
+    }
+  );
+}
+
+function unfreezeQR(no){
+  const q = STATE.qrs.find(x=>x.no===no);
+  if(!q) return;
+  q.status = '正常';
+  toast(`收款码 [${q.no}] 已解冻`, 'success');
+  const cur = document.querySelector('.nav-item.active')?.dataset.view;
+  if(cur) refreshView(cur);
+}
+
+function handlePatrol(no){
+  const p = STATE.patrols.find(x=>x.no===no);
+  if(!p) return;
+  p.result = '已归档';
+  toast(`巡检异常 [${no}] 已处理归档`, 'success');
+  renderPatrols();
+}
+
+function retryCallback(orderNo){
+  const c = STATE.callbacks.find(x=>x.orderNo===orderNo);
+  if(!c) return;
+  c.status = '成功';
+  c.code = 200;
+  c.retry = c.retry + 1;
+  c.time = new Date().toLocaleString('zh-CN',{hour12:false}).replace(/\//g,'-');
+  toast(`回调 [${orderNo}] 已重试推送成功`, 'success');
+  renderCallbacks();
+  refreshBadges();
+}
+
+function handleDiff(orderNo){
+  const d = STATE.diffs.find(x=>x.orderNo===orderNo);
+  if(!d) return;
+  confirmDialog(
+    '处理差异订单',
+    `确认将差异订单 <strong>${orderNo}</strong> 标记为已处理？<br><br><span style="color:var(--text3);font-size:12px">差异处理仅作技术核对记录，资金调整请联系合作收单机构 ${d.partner}。</span>`,
+    ()=>{
+      d.status = '已处理';
+      toast(`差异订单 [${orderNo}] 已处理`, 'success');
+      renderDiffs();
+      refreshBadges();
+    }
+  );
+}
+
+function handleRiskOrder(orderNo){
+  const r = STATE.riskOrders.find(x=>x.orderNo===orderNo);
+  if(!r) return;
+  confirmDialog(
+    '处理风险订单',
+    `处理风险订单 <strong>${orderNo}</strong>？<br><br>命中规则：<strong>${r.rule}</strong> · 风险等级：<strong>${r.level}</strong>`,
+    ()=>{
+      r.status = '已处理';
+      toast(`风险订单 [${orderNo}] 已处理，已通知合作收单机构`, 'success');
+      renderRiskOrders();
+      refreshBadges();
+    }
+  );
+}
+
+function handleAlert(no){
+  const a = STATE.alerts.find(x=>x.no===no);
+  if(!a) return;
+  a.status = '已处理';
+  a.handler = 'admin';
+  toast(`安全告警 [${no}] 已处理`, 'success');
+  renderAlerts();
+  refreshBadges();
+}
+
+function removeBlacklist(idx){
+  const b = STATE.blacklist[idx];
+  STATE.blacklist.splice(idx,1);
+  toast(`已从黑名单移除 [${b.value}]`, 'success');
+  renderBlacklist();
+}
+
+function resetKey(mno){
+  const d = STATE.developers.find(x=>x.mno===mno);
+  if(!d) return;
+  confirmDialog(
+    '重置密钥',
+    `重置 <strong>${d.name}</strong> 的接口密钥？<br><br><span style="color:var(--text3);font-size:12px">重置后旧密钥立即失效，新密钥将通过安全渠道线下交付。所有调用方需更新密钥。</span>`,
+    ()=>{
+      toast(`密钥重置申请已提交，等待审批`, 'success');
+    }
+  );
+}
+
+// 新增操作
+function addPartner(){
+  const name = document.getElementById('np-name').value.trim();
+  if(!name){ toast('请填写机构名称','error'); return; }
+  STATE.partners.push({
+    no:'ORG'+String(STATE.partners.length+1).padStart(3,'0'),
+    name,
+    type:document.getElementById('np-type').value,
+    status:'合作中',
+    agreement:document.getElementById('np-agreement').value||'AGR-2024-XXX',
+    channels:'待配置',biz:'聚合收款',
+    tech:document.getElementById('np-tech').value||'-',
+    compliance:document.getElementById('np-comp').value||'-',
+    started:document.getElementById('np-started').value||'2024-05-20'
+  });
+  closeModal('modal-partner-new');
+  toast(`合作机构 [${name}] 已添加`, 'success');
+  renderPartners();
+}
+
+function addQR(){
+  const merchantSel = document.getElementById('nqr-merchant');
+  const merchant = STATE.merchants.find(m=>m.no===merchantSel.value);
+  if(!merchant){ toast('请选择商户','error'); return; }
+  const store = document.getElementById('nqr-store').value.trim()||'默认门店';
+  const partner = document.getElementById('nqr-partner').value;
+  const type = document.getElementById('nqr-type').value;
+  const no = 'QR'+new Date().toISOString().slice(0,10).replace(/-/g,'')+String(STATE.qrs.length+1).padStart(3,'0');
+  STATE.qrs.push({no,merchantNo:merchant.no,merchant:merchant.name,store,partner,type,status:'正常',created:new Date().toISOString().slice(0,10),last:'-',tradeCity:'-',regCity:'-'});
+  closeModal('modal-qr-new');
+  toast(`收款码 [${no}] 已生成`, 'success');
+  renderQRs();
+}
+
+function addRule(){
+  const name = document.getElementById('nr-name').value.trim();
+  if(!name){ toast('请填写规则名称','error'); return; }
+  STATE.riskRules.push({
+    no:'RULE_'+String(STATE.riskRules.length+1).padStart(3,'0'),
+    name,
+    type:document.getElementById('nr-type').value,
+    cond:document.getElementById('nr-cond').value||'-',
+    action:document.getElementById('nr-action').value,
+    status:'启用',today:0
+  });
+  closeModal('modal-rule-new');
+  toast(`风控规则 [${name}] 已创建`, 'success');
+  renderRiskRules();
+}
+
+function addIndustry(){
+  const name = document.getElementById('ni-name').value.trim();
+  if(!name){ toast('请填写行业名称','error'); return; }
+  STATE.industries.push({
+    name,
+    mcc:document.getElementById('ni-mcc').value||'-',
+    risk:document.getElementById('ni-risk').value,
+    allow:document.getElementById('ni-allow').value,
+    audit:document.getElementById('ni-allow').value==='加强审核'?'是':'否',
+    extra:'-',limit1:'-',limit2:'-'
+  });
+  closeModal('modal-industry-new');
+  toast(`行业 [${name}] 已添加`, 'success');
+  renderIndustry();
+}
+
+function addBlacklist(){
+  const value = document.getElementById('bl-value').value.trim();
+  if(!value){ toast('请填写标识值','error'); return; }
+  STATE.blacklist.push({
+    type:document.getElementById('bl-type').value,
+    value,merchant:'-',
+    reason:document.getElementById('bl-reason').value||'-',
+    source:'人工添加',
+    time:new Date().toISOString().slice(0,10)
+  });
+  closeModal('modal-blacklist-add');
+  toast(`已添加至黑名单`, 'success');
+  renderBlacklist();
+}
+
+function submitOnboard(){
+  const name = document.getElementById('ob-name').value.trim();
+  const credit = document.getElementById('ob-credit').value.trim();
+  if(!name || !credit){ toast('请填写商户名称和统一社会信用代码','error'); return; }
+  const no = 'APP'+new Date().toISOString().slice(0,10).replace(/-/g,'')+String(STATE.auditApps.length+1).padStart(3,'0');
+  STATE.auditApps.unshift({
+    no,name,
+    industry:document.getElementById('ob-industry').value,
+    time:new Date().toLocaleString('zh-CN',{hour12:false}).replace(/\//g,'-').slice(0,16),
+    status:'待初审',
+    partner:document.getElementById('ob-partner').value,
+    credit
+  });
+  toast(`商户入网申请 [${no}] 已提交，等待审核`, 'success');
+  refreshBadges();
+  document.getElementById('ob-name').value='';
+  document.getElementById('ob-credit').value='';
+  setTimeout(()=>switchView('merchant-audit'),800);
+}
+
+function handleCompliance(btn, name){
+  btn.disabled = true;
+  btn.textContent = '处理中…';
+  setTimeout(()=>{
+    const item = btn.closest('.check-item');
+    const icon = item.querySelector('.ci-icon');
+    icon.className = 'ci-icon ci-done';
+    icon.innerHTML = '<i class="ti ti-check"></i>';
+    const badge = item.querySelector('.badge');
+    badge.className = 'badge b-green';
+    badge.textContent = '已完成';
+    btn.remove();
+    toast(`合规项 [${name}] 已处理完成`, 'success');
+  }, 600);
+}
+
+// 填充收款码新建Modal下拉
+function fillQRSelects(){
+  const ms = document.getElementById('nqr-merchant');
+  if(ms) ms.innerHTML = STATE.merchants.map(m=>`<option value="${m.no}">${m.name}</option>`).join('');
+  const ps = document.getElementById('nqr-partner');
+  if(ps) ps.innerHTML = STATE.partners.map(p=>`<option>${p.name}</option>`).join('');
+}
+
+// ═════════════ V4 新增交互函数 ═════════════
+
+function addField(){
+  const name = document.getElementById('nf-name').value.trim();
+  if(!name){ toast('请填写字段名称','error'); return; }
+  const cls = document.getElementById('nf-class').value;
+  STATE.fields.push({
+    name,cls,
+    biz:document.getElementById('nf-biz').value||'-',
+    store: cls==='C3'?'禁止存储':cls==='C2'?'AES-256-GCM':'明文',
+    transmit: cls==='C3'?'TLS+加密':cls==='C2'?'HTTPS+加密':'HTTPS',
+    display: document.getElementById('nf-display').value,
+    ac: cls==='C3'?'禁止访问':cls==='C2'?'审批后查看':'授权角色访问',
+    mask:'默认'
+  });
+  closeModal('modal-field-new');
+  toast(`字段 [${name}] 已加入分级清单`, 'success');
+  renderFieldClassification();
+}
+
+function addMaskRule(){
+  const field = document.getElementById('nm-field').value.trim();
+  if(!field){ toast('请填写字段名称','error'); return; }
+  STATE.maskRules.push({
+    field,
+    cls: document.getElementById('nm-class').value,
+    role: document.getElementById('nm-role').value,
+    strategy: document.getElementById('nm-strategy').value,
+    example: '示例待生成',
+    approve: document.getElementById('nm-approve').value,
+    status: '启用'
+  });
+  closeModal('modal-mask-new');
+  toast('脱敏规则已添加', 'success');
+  renderMaskRules();
+}
+
+function approveDestruction(no){
+  const d = STATE.destructions.find(x=>x.no===no);
+  if(!d) return;
+  confirmDialog(
+    '审批数据销毁',
+    `审批销毁记录 <strong>${no}</strong><br><br>数据类型：${d.dataType}（${d.cls} 类）<br>数据量：${d.amount}<br><br><span style="color:var(--text3);font-size:12px">销毁后数据不可恢复，请慎重操作。</span>`,
+    ()=>{
+      d.status = '已销毁';
+      d.reviewer = 'admin';
+      d.time = new Date().toLocaleString('zh-CN',{hour12:false}).replace(/\//g,'-').slice(0,16);
+      STATE.opLogs.unshift({user:'admin',module:'信息安全合规',op:'审批数据销毁',target:no,ip:'10.0.1.100',result:'成功',time:d.time});
+      toast(`销毁记录 [${no}] 审批通过`, 'success');
+      renderDestructions();
+    }
+  );
+}
+
+function approveKeyOp(no){
+  const k = STATE.keyOps.find(x=>x.no===no);
+  if(!k) return;
+  confirmDialog(
+    '审批密钥操作',
+    `审批密钥操作 <strong>${no}</strong><br>密钥：${k.key}<br>操作：${k.op}`,
+    ()=>{
+      k.result = '成功';
+      k.approver = 'admin（已审批）';
+      toast(`密钥操作 [${no}] 已审批通过`, 'success');
+      renderKeyOps();
+    }
+  );
+}
+
+function syncExternalBlacklist(){
+  toast('正在同步外部黑名单…', 'info');
+  setTimeout(()=>{
+    const newItem = {
+      source:'支付清算协会',
+      type:'套现高风险',
+      level:'高',
+      value:'IMEI:867***...'+Math.floor(Math.random()*900+100),
+      subject:'实时同步条目',
+      time:new Date().toLocaleString('zh-CN',{hour12:false}).replace(/\//g,'-').slice(0,16),
+      hit:'未命中',
+      action:'查看'
+    };
+    STATE.extBlIncoming.unshift(newItem);
+    toast(`同步完成，新增 1 条外部黑名单`, 'success');
+    renderExtBl();
+  }, 800);
+}
+
+function handleRiskMonitor(no){
+  const r = STATE.riskMonitors.find(x=>x.no===no);
+  if(!r) return;
+  confirmDialog(
+    '处理监测告警',
+    `处理监测告警 <strong>${r.name}</strong>？<br><br>对应风险类型：${r.type}<br>风险等级：${r.level}<br><br>处理后将清除告警状态。`,
+    ()=>{
+      r.status = '正常';
+      STATE.opLogs.unshift({user:'admin',module:'风险监测',op:'处理监测告警',target:r.no+' '+r.name,ip:'10.0.1.100',result:'成功',time:new Date().toLocaleString('zh-CN',{hour12:false}).replace(/\//g,'-').slice(0,16)});
+      toast(`监测告警 [${r.name}] 已处理`, 'success');
+      renderRiskMonitor();
+      refreshBadges();
+    }
+  );
+}
+
+
+// ═════════════ INIT ═════════════
+buildNav();
+renderDashboard();
+fillQRSelects();
+// Pre-render some views so badges/counts are accurate
+renderMerchants();
+renderOrders();
+renderAudit();
+renderPartners();
+
+</script>
+</body>
+</html>
